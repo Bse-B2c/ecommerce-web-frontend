@@ -41,7 +41,7 @@ const ProductReview: FC<ProductReviewProps> = () => {
 				/>
 			</Grid>
 			<Grid item xs={9}>
-				<Typography variant={'h6'}>Customer reviews</Typography>
+				<Typography variant={'h6'}>Reviews</Typography>
 				<ReviewCard
 					title={'Rodrigo Limões'}
 					subTitle={'Rated in 21 set. 2021'}
