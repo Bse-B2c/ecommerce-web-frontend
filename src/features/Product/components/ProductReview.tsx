@@ -2,13 +2,22 @@ import React, { FC } from 'react';
 import { Grid, Rating, Typography } from '@mui/material';
 import ReviewCard from '@components/ReviewCard';
 import PercentageReviews from '@features/Product/components/PercentageReviews';
+import { ScalePercentage } from '@src/model/StatsRating';
 
-interface ProductReviewStateProps {}
+interface ProductReviewStateProps {
+	qtdRatings: number;
+	ratingScale: number;
+	percentages: Array<ScalePercentage>;
+}
 interface ProductReviewDispatchProps {}
 
 type ProductReviewProps = ProductReviewStateProps & ProductReviewDispatchProps;
 
-const ProductReview: FC<ProductReviewProps> = () => {
+const ProductReview: FC<ProductReviewProps> = ({
+	qtdRatings,
+	ratingScale,
+	percentages,
+}) => {
 	return (
 		<Grid container sx={{ mt: 2 }} direction={'row'} spacing={2} item>
 			<Grid item xs={3}>
@@ -16,35 +25,17 @@ const ProductReview: FC<ProductReviewProps> = () => {
 					Customer reviews
 				</Typography>
 				<Grid container direction={'column'} item xs sx={{ mb: 1 }}>
-					<Rating size={'medium'} name="read-only" value={5} readOnly />
+					<Rating
+						size={'medium'}
+						name="read-only"
+						value={ratingScale}
+						readOnly
+					/>
 					<Typography variant={'subtitle2'} color={'text.secondary'}>
-						1200 Reviews
+						{qtdRatings} Reviews
 					</Typography>
 				</Grid>
-				<PercentageReviews
-					elements={[
-						{
-							scale: 1,
-							percentage: 10,
-						},
-						{
-							scale: 2,
-							percentage: 20,
-						},
-						{
-							scale: 3,
-							percentage: 30,
-						},
-						{
-							scale: 4,
-							percentage: 10,
-						},
-						{
-							scale: 5,
-							percentage: 20,
-						},
-					]}
-				/>
+				<PercentageReviews elements={percentages} />
 			</Grid>
 			<Grid item xs={9}>
 				<Typography variant={'h6'}>Reviews</Typography>
