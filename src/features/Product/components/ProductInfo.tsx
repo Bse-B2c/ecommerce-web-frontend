@@ -21,6 +21,8 @@ interface ProductInfoStateProps {
 	discount?: Discount;
 	price: number;
 	image: string;
+	ratingScale: number;
+	qtdRatings: number;
 }
 interface ProductInfoDispatchProps {}
 
@@ -32,6 +34,8 @@ const ProductInfo: FC<ProductInfoProps> = ({
 	price,
 	discount,
 	image,
+	ratingScale,
+	qtdRatings,
 }) => {
 	const isDiscountActive = discount && discount.active;
 	const formattedPrice = getBrazilCurrencyFormat(price);
@@ -60,9 +64,14 @@ const ProductInfo: FC<ProductInfoProps> = ({
 						)}
 					</Typography>
 					<Grid container item alignItems={'center'}>
-						<Rating size={'small'} name="read-only" value={5} readOnly />
+						<Rating
+							size={'small'}
+							name="read-only"
+							value={ratingScale}
+							readOnly
+						/>
 						<Typography sx={{ ml: 1 }} variant="body2">
-							(120)
+							({qtdRatings})
 						</Typography>
 					</Grid>
 				</Grid>
