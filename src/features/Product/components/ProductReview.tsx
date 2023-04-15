@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Rating, Typography } from '@mui/material';
 import ReviewCard from '@components/ReviewCard';
 import PercentageReviews from '@features/Product/components/PercentageReviews';
 
@@ -15,6 +15,12 @@ const ProductReview: FC<ProductReviewProps> = () => {
 				<Typography variant={'h6'} sx={{ mb: 1 }}>
 					Customer reviews
 				</Typography>
+				<Grid container direction={'column'} item xs sx={{ mb: 1 }}>
+					<Rating size={'medium'} name="read-only" value={5} readOnly />
+					<Typography variant={'subtitle2'} color={'text.secondary'}>
+						1200 Reviews
+					</Typography>
+				</Grid>
 				<PercentageReviews
 					elements={[
 						{
