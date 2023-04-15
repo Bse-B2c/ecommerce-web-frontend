@@ -79,6 +79,28 @@ const ProductItem: FC<ProductItemProps> = () => {
 					</Grid>
 				</Grid>
 			</Grid>
+			<Grid container direction={'column'} spacing={1} sx={{ mt: 2 }}>
+				<Grid item xs>
+					<Typography variant={'h6'}>Specification</Typography>
+				</Grid>
+				{[
+					{ label: 'Number of Page', value: '134' },
+					{ label: 'Language', value: 'Portuguese' },
+				].map(({ label, value }, index) => (
+					<Grid container item xs key={`${label}-${index}`}>
+						<Grid item xs={2}>
+							<Typography variant={'body1'} color={'text.secondary'}>
+								<strong>{label}</strong>
+							</Typography>
+						</Grid>
+						<Grid item>
+							<Typography variant={'body1'} color={'text.secondary'}>
+								{value}
+							</Typography>
+						</Grid>
+					</Grid>
+				))}
+			</Grid>
 			<ProductReview />
 		</>
 	);
