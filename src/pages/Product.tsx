@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { ProductItem } from '@features/Product';
 
 interface ProductStateProps {}
 interface ProductDispatchProps {}
@@ -6,7 +7,7 @@ interface ProductDispatchProps {}
 type ProductProps = ProductStateProps & ProductDispatchProps;
 
 const Product: FC<ProductProps> = () => {
-	return <div>product</div>;
+	return <ProductItem />;
 };
 
 export default Product;

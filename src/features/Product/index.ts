@@ -1,3 +1,3 @@
-import { publicProductApi } from '@features/Product/services/publicProductApi';
+import ProductItem from '@features/Product/components/ProductItem';
 
-export { publicProductApi };
+export { ProductItem };
