@@ -1,14 +1,13 @@
 import React, { FC } from 'react';
-import {
-	Button,
-	CardMedia,
-	Grid,
-	Rating,
-	Stack,
-	Typography,
-} from '@mui/material';
-import { AddShoppingCart, ShoppingCart } from '@mui/icons-material';
 import ProductReview from '@features/Product/components/ProductReview';
+import { useGetProductQuery } from '@store/api/productApi';
+import {
+	useGetAverageProductReviewQuery,
+	useGetScalePercentageQuery,
+} from '@store/api/ratingApi';
+import { useParams } from 'react-router-dom';
+import ProductSpecification from '@features/Product/components/ProductSpecification';
+import ProductInfo from '@features/Product/components/ProductInfo';
 
 interface ProductItemStateProps {}
 interface ProductItemDispatchProps {}
@@ -16,92 +15,30 @@ interface ProductItemDispatchProps {}
 type ProductItemProps = ProductItemStateProps & ProductItemDispatchProps;
 
 const ProductItem: FC<ProductItemProps> = () => {
+	const params = useParams();
+	const id = params.id ? +params.id : -1;
+	const { data: product } = useGetProductQuery(id);
+	const { data: ratingScale } = useGetAverageProductReviewQuery(id);
+	const { data: averageRating } = useGetScalePercentageQuery(id);
+
 	return (
 		<>
-			<Grid container spacing={2}>
-				<Grid item xs={5}>
-					<CardMedia
-						component="img"
-						width={500}
-						height={450}
-						sx={{ objectFit: 'contain' }}
-						src={
-							'http://localhost:4700/img/7c55d990608940063a76619cd369c742-livro.jpg'
-						}
-					/>
-				</Grid>
-				<Grid container direction={'column'} spacing={2} item xs={7}>
-					<Grid item>
-						<Typography variant={'h6'}> Name of Product</Typography>
-						<Grid container item alignItems={'center'}>
-							<Rating size={'small'} name="read-only" value={5} readOnly />
-							<Typography sx={{ ml: 1 }} variant="body2">
-								(120)
-							</Typography>
-						</Grid>
-					</Grid>
-					<Grid item>
-						<Typography variant={'subtitle1'}>
-							<strong>Description</strong>
-						</Typography>
-						<Typography variant={'body1'}>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique
-							unde fugit veniam eius, perspiciatis sunt? Corporis qui ducimus
-							quibusdam, aliquam dolore excepturi quae. Distinctio enim at
-							eligendi perferendis in cum quibusdam sed quae, accusantium et
-							aperiam?
-						</Typography>
-					</Grid>
-					<Grid item>
-						<Typography variant="body2" display="block" gutterBottom>
-							<s>R$ 440</s>
-						</Typography>
-						<Typography variant="h6" fontSize={'2rem'} fontWeight={800}>
-							R$ 200
-						</Typography>
-					</Grid>
-					<Grid item>
-						<Stack spacing={2} direction="row">
-							<Button
-								disableElevation
-								color={'success'}
-								variant={'contained'}
-								startIcon={<ShoppingCart />}>
-								Buy Now
-							</Button>
-							<Button
-								color={'success'}
-								variant={'outlined'}
-								startIcon={<AddShoppingCart />}>
-								Add to Card
-							</Button>
-						</Stack>
-					</Grid>
-				</Grid>
-			</Grid>
-			<Grid container direction={'column'} spacing={1} sx={{ mt: 2 }}>
-				<Grid item xs>
-					<Typography variant={'h6'}>Specification</Typography>
-				</Grid>
-				{[
-					{ label: 'Number of Page', value: '134' },
-					{ label: 'Language', value: 'Portuguese' },
-				].map(({ label, value }, index) => (
-					<Grid container item xs key={`${label}-${index}`}>
-						<Grid item xs={2}>
-							<Typography variant={'body1'} color={'text.secondary'}>
-								<strong>{label}</strong>
-							</Typography>
-						</Grid>
-						<Grid item>
-							<Typography variant={'body1'} color={'text.secondary'}>
-								{value}
-							</Typography>
-						</Grid>
-					</Grid>
-				))}
-			</Grid>
-			<ProductReview />
+			<ProductInfo
+				name={product?.name ?? 'Unknown'}
+				description={product?.description ?? 'Unknown'}
+				price={product?.price || 0}
+				discount={product?.discount ?? undefined}
+				image={product?.images[0] || ''}
+				ratingScale={ratingScale || 0}
+				qtdRatings={averageRating?.total || 0}
+			/>
+			<ProductSpecification specifications={product?.specifications} />
+			<ProductReview
+				productId={id}
+				qtdRatings={averageRating?.total || 0}
+				ratingScale={ratingScale || 0}
+				percentages={averageRating?.percentages || []}
+			/>
 		</>
 	);
 };
