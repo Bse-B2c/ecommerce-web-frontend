@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Box, Container, Toolbar } from '@mui/material';
+import { Container, Toolbar } from '@mui/material';
 import { routes } from '@src/routes';
 import { Route, Routes } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ type AppBodyProps = AppBodyStateProps & AppBodyDispatchProps;
 
 const AppBody: FC<AppBodyProps> = () => {
 	return (
-		<Box component="main" sx={{ p: 3 }}>
+		<Container fixed component="main" sx={{ p: 3 }}>
 			<Toolbar />
 			<Container
 				disableGutters
@@ -30,7 +30,7 @@ const AppBody: FC<AppBodyProps> = () => {
 					})}
 				</Routes>
 			</Container>
-		</Box>
+		</Container>
 	);
 };
 
