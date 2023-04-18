@@ -7,6 +7,7 @@ import {
 	CardContent,
 	CardMedia,
 	Chip,
+	Grid,
 	Link,
 	Rating,
 	Tooltip,
@@ -27,6 +28,7 @@ interface ProductCardStateProps {
 	image: { src: string; description: string };
 	averageRating: number;
 	qtdReviews: number;
+	mode?: 'horizontal' | 'vertical';
 }
 interface ProductCardDispatchProps {}
 
@@ -40,12 +42,89 @@ const ProductCard: FC<ProductCardProps> = ({
 	image,
 	qtdReviews,
 	averageRating,
+	mode = 'vertical',
 }) => {
 	const formattedPrice = getBrazilCurrencyFormat(price);
 	const isDiscountActive = discount && discount.active;
 	const url = `/product/${id}`;
+
+	const contentPrice = isDiscountActive ? (
+		<>
+			<Typography variant="body2" color={'text.secondary'} fontWeight={800}>
+				<s>{formattedPrice}</s>
+			</Typography>
+			<Typography variant="h5" fontWeight={800}>
+				{getBrazilCurrencyFormat(
+					getDiscountPrice(price, discount.discountPercent)
+				)}
+			</Typography>
+		</>
+	) : (
+		<Typography variant="h5" fontWeight={800}>
+			{formattedPrice}
+		</Typography>
+	);
+
+	if (mode === 'horizontal') {
+		return (
+			<Card variant="outlined" sx={{ width: '100%', mb: 1 }}>
+				<CardContent>
+					<Grid container direction={'row'} spacing={1} item xs>
+						<Grid item xs={5}>
+							<CardMedia
+								component="img"
+								height={150}
+								width={'100%'}
+								sx={{ objectFit: 'contain', p: 1 }}
+								image={image.src}
+							/>
+						</Grid>
+						<Grid item xs={7}>
+							<Link href={url} color="inherit" underline="none">
+								<Tooltip title={name} placement="right">
+									<Typography variant="h6" gutterBottom>
+										{name}
+										{isDiscountActive && (
+											<Chip
+												sx={{ ml: 1 }}
+												label={'30% off'}
+												color={'primary'}
+												size={'small'}
+											/>
+										)}
+									</Typography>
+								</Tooltip>
+								<Box sx={{ display: 'flex', mb: 1 }}>
+									<Rating
+										size={'small'}
+										name="read-only"
+										value={averageRating}
+										readOnly
+									/>
+									<Typography variant="body2" color={'text.secondary'}>
+										({qtdReviews})
+									</Typography>
+								</Box>
+								{contentPrice}
+							</Link>
+							<Button
+								color="success"
+								variant="contained"
+								disableElevation
+								fullWidth
+								sx={{ mt: 2 }}
+								startIcon={<AddShoppingCart />}>
+								Add Cart
+							</Button>
+						</Grid>
+					</Grid>
+				</CardContent>
+			</Card>
+		);
+	}
+
 	return (
-		<Card variant="outlined" sx={{ width: 220 }}>
+		<Card variant="outlined" sx={{ width: 200, m: 1 }}>
 			<Box
 				sx={{
 					display: 'flex',
@@ -90,25 +169,7 @@ const ProductCard: FC<ProductCardProps> = ({
 							{name}
 						</Typography>
 					</Tooltip>
-					{isDiscountActive ? (
-						<>
-							<Typography
-								variant="body2"
-								color={'text.secondary'}
-								fontWeight={800}>
-								<s>{formattedPrice}</s>
-							</Typography>
-							<Typography variant="h5" fontWeight={800}>
-								{getBrazilCurrencyFormat(
-									getDiscountPrice(price, discount.discountPercent)
-								)}
-							</Typography>
-						</>
-					) : (
-						<Typography variant="h5" fontWeight={800}>
-							{formattedPrice}
-						</Typography>
-					)}
+					{contentPrice}
 				</Link>
 			</CardContent>
 			<CardActions>
