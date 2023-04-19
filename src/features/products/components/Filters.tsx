@@ -22,12 +22,17 @@ const sortOrderOption = [
 	{ label: 'Decreasing', value: 'DESC' },
 ];
 
-interface FiltersStateProps {}
-interface FiltersDispatchProps {}
+interface FiltersStateProps {
+	orderBy: string;
+	sortOrder: string;
+}
+interface FiltersDispatchProps {
+	onChange: (key: string, value: string) => void;
+}
 
 type FiltersProps = FiltersStateProps & FiltersDispatchProps;
 
-const Filters: FC<FiltersProps> = () => {
+const Filters: FC<FiltersProps> = ({ orderBy, sortOrder, onChange }) => {
 	return (
 		<Grid
 			container
@@ -53,8 +58,8 @@ const Filters: FC<FiltersProps> = () => {
 								<RadioGroup
 									aria-labelledby="demo-controlled-radio-buttons-group"
 									name="controlled-radio-buttons-group"
-									value={''}
-									onChange={() => {}}>
+									value={sortOrder}
+									onChange={(e, value) => onChange('sortOrder', value)}>
 									{sortOrderOption.map(({ label, value }) => (
 										<FormControlLabel
 											value={value}
@@ -70,8 +75,8 @@ const Filters: FC<FiltersProps> = () => {
 								<FormLabel id="orderby-radio">OrderBy</FormLabel>
 								<RadioGroup
 									aria-labelledby="orderby-radio"
-									value={''}
-									onChange={() => {}}>
+									value={orderBy}
+									onChange={(e, value) => onChange('orderBy', value)}>
 									{orderByOption.map(({ label, value }) => (
 										<FormControlLabel
 											value={value}

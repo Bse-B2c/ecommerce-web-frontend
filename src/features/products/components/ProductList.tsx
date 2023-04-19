@@ -4,8 +4,9 @@ import ProductCard from '@components/ProductCard';
 import { Product } from '@features/Product';
 
 interface ProductListStateProps {
-	elements: Array<Product>;
+	data: Array<Product>;
 	totalPage: number;
+	page: number;
 }
 interface ProductListDispatchProps {
 	onChangePage: (event: unknown, newPage: number) => void;
@@ -14,19 +15,20 @@ interface ProductListDispatchProps {
 type ProductListProps = ProductListStateProps & ProductListDispatchProps;
 
 const ProductList: FC<ProductListProps> = ({
-	elements,
+	data,
 	totalPage,
+	page,
 	onChangePage,
 }) => {
 	const theme = useTheme();
 	const match = useMediaQuery(theme.breakpoints.down('sm'));
 
 	const content =
-		Array.isArray(elements) && elements.length > 0
-			? elements.map(({ name, price, discount }, index) => (
+		Array.isArray(data) && data.length > 0
+			? data.map(({ id, name, price, discount }, index) => (
 					<ProductCard
 						key={`${name}-${index}`}
-						id={1}
+						id={id}
 						mode={match ? 'horizontal' : undefined}
 						name={name}
 						price={price}
@@ -49,12 +51,17 @@ const ProductList: FC<ProductListProps> = ({
 				justifyContent={'start'}
 				item
 				xs={8}
-				md={10}
+				md={9}
 				lg={10}>
 				{content}
 			</Grid>
 			<Grid container item xs justifyContent={'center'}>
-				<Pagination count={totalPage} onChange={onChangePage} color="primary" />
+				<Pagination
+					count={totalPage}
+					page={page}
+					onChange={onChangePage}
+					color="primary"
+				/>
 			</Grid>
 		</>
 	);
