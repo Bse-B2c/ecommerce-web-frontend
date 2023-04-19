@@ -3,6 +3,7 @@ import { getServiceHost } from '@utils/getServiceHost';
 import { ApiResponse } from '@src/model/ApiResponse';
 import { Product } from '@features/Product/model/Product';
 import { baseQueryWithReauth } from '@src/lib/baseQueryWithReauth';
+import { BaseSearch } from '@src/model/BaseSearch';
 
 export const productApi = createApi({
 	reducerPath: 'productApi',
@@ -12,7 +13,13 @@ export const productApi = createApi({
 			query: id => `/${id}`,
 			transformResponse: (response: ApiResponse<Product>) => response.data,
 		}),
+		findProducts: builder.query<Array<Product>, BaseSearch>({
+			query: ({ page, limit, orderBy, sortOrder }) =>
+				`/?page=${page}&limit=${limit}&orderBy=${orderBy}&sortOrder=${sortOrder}`,
+			transformResponse: (response: ApiResponse<Array<Product>>) =>
+				response.data,
+		}),
 	}),
 });
 
-export const { useGetProductQuery } = productApi;
+export const { useGetProductQuery, useFindProductsQuery } = productApi;
