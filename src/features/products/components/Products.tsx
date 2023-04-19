@@ -17,6 +17,7 @@ const Products: FC<ProductsProps> = () => {
 		sortOrder = 'ASC',
 		page = 0,
 		limit = 10,
+		categories,
 		...search
 	} = Object.fromEntries([...searchParams]);
 	const { data } = useFindProductsQuery({
@@ -37,6 +38,7 @@ const Products: FC<ProductsProps> = () => {
 			<Filters
 				orderBy={orderBy}
 				sortOrder={sortOrder}
+				categories={categories?.split(',').map(e => +e) || []}
 				onChange={onChangeParams}
 			/>
 			<ProductList

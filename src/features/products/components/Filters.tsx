@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
 import {
+	Box,
 	Card,
 	CardContent,
 	Checkbox,
+	CircularProgress,
 	FormControl,
 	FormControlLabel,
 	FormLabel,
@@ -11,6 +13,7 @@ import {
 	RadioGroup,
 	Typography,
 } from '@mui/material';
+import { useGetAllCategoriesQuery } from '@store/api/categoryApi';
 
 const orderByOption = [
 	{ label: 'Price', value: 'price' },
@@ -25,6 +28,7 @@ const sortOrderOption = [
 interface FiltersStateProps {
 	orderBy: string;
 	sortOrder: string;
+	categories: Array<number>;
 }
 interface FiltersDispatchProps {
 	onChange: (key: string, value: string) => void;
@@ -32,7 +36,15 @@ interface FiltersDispatchProps {
 
 type FiltersProps = FiltersStateProps & FiltersDispatchProps;
 
-const Filters: FC<FiltersProps> = ({ orderBy, sortOrder, onChange }) => {
+const Filters: FC<FiltersProps> = ({
+	orderBy,
+	sortOrder,
+	categories,
+	onChange,
+}) => {
+	const { data: categoryOptions, isLoading } =
+		useGetAllCategoriesQuery(undefined);
+
 	return (
 		<Grid
 			container
@@ -60,8 +72,9 @@ const Filters: FC<FiltersProps> = ({ orderBy, sortOrder, onChange }) => {
 									name="controlled-radio-buttons-group"
 									value={sortOrder}
 									onChange={(e, value) => onChange('sortOrder', value)}>
-									{sortOrderOption.map(({ label, value }) => (
+									{sortOrderOption.map(({ label, value }, index) => (
 										<FormControlLabel
+											key={`${label}-${index}`}
 											value={value}
 											control={<Radio size={'small'} />}
 											label={label}
@@ -77,8 +90,9 @@ const Filters: FC<FiltersProps> = ({ orderBy, sortOrder, onChange }) => {
 									aria-labelledby="orderby-radio"
 									value={orderBy}
 									onChange={(e, value) => onChange('orderBy', value)}>
-									{orderByOption.map(({ label, value }) => (
+									{orderByOption.map(({ label, value }, index) => (
 										<FormControlLabel
+											key={`${label}-${index}`}
 											value={value}
 											control={<Radio size={'small'} />}
 											label={label}
@@ -91,13 +105,51 @@ const Filters: FC<FiltersProps> = ({ orderBy, sortOrder, onChange }) => {
 							<FormLabel id="demo-controlled-radio-buttons-group">
 								Categories
 							</FormLabel>
-							{['Value1', 'Value2'].map(category => (
-								<FormControlLabel
-									key={category}
-									control={<Checkbox size={'small'} defaultChecked />}
-									label={category}
-								/>
-							))}
+							{isLoading ? (
+								<Box
+									sx={{
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										mt: 1,
+									}}>
+									<CircularProgress size={'2rem'} />
+								</Box>
+							) : Array.isArray(categoryOptions) &&
+							  categoryOptions.length > 0 ? (
+								categoryOptions.map(({ id, name, children }, index) => {
+									const isContainedInFilter = categories.includes(id);
+									return (
+										<FormControlLabel
+											key={`${name}-${index}`}
+											control={
+												<Checkbox
+													size={'small'}
+													value={id}
+													onChange={e => {
+														const isChecked = e.target.checked;
+														if (isChecked && !isContainedInFilter) {
+															onChange(
+																'categories',
+																[id, ...categories].join(',')
+															);
+														} else if (!isChecked && isContainedInFilter) {
+															onChange(
+																'categories',
+																categories
+																	.filter(category => category !== id)
+																	.join(',')
+															);
+														}
+													}}
+													checked={isContainedInFilter}
+												/>
+											}
+											label={name}
+										/>
+									);
+								})
+							) : null}
 						</Grid>
 					</Grid>
 				</CardContent>
