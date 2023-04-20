@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Grid } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 import Filters from '@features/products/components/Filters';
 import ProductList from '@features/products/components/ProductList';
 import { useSearchParams } from 'react-router-dom';
@@ -20,7 +20,7 @@ const Products: FC<ProductsProps> = () => {
 		categories,
 		...search
 	} = Object.fromEntries([...searchParams]);
-	const { data } = useFindProductsQuery({
+	const { data, isLoading } = useFindProductsQuery({
 		page: +page - 1 || 0,
 		limit: +limit || 10,
 		orderBy,
@@ -44,14 +44,28 @@ const Products: FC<ProductsProps> = () => {
 				}
 				onChange={onChangeParams}
 			/>
-			<ProductList
-				data={data || []}
-				page={+page || 0}
-				totalPage={20}
-				onChangePage={(e, page) => {
-					onChangeParams('page', page.toString());
-				}}
-			/>
+			{isLoading ? (
+				<Grid
+					container
+					direction={'row'}
+					alignItems={'center'}
+					justifyContent={'center'}
+					item
+					xs={8}
+					md={9}
+					lg={10}>
+					<CircularProgress size={'2rem'} />
+				</Grid>
+			) : (
+				<ProductList
+					data={data || []}
+					page={+page || 0}
+					totalPage={20}
+					onChangePage={(e, page) => {
+						onChangeParams('page', page.toString());
+					}}
+				/>
+			)}
 		</Grid>
 	);
 };
