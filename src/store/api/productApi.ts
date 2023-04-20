@@ -13,9 +13,12 @@ export const productApi = createApi({
 			query: id => `/${id}`,
 			transformResponse: (response: ApiResponse<Product>) => response.data,
 		}),
-		findProducts: builder.query<Array<Product>, BaseSearch>({
-			query: ({ page, limit, orderBy, sortOrder }) =>
-				`/?page=${page}&limit=${limit}&orderBy=${orderBy}&sortOrder=${sortOrder}`,
+		findProducts: builder.query<
+			Array<Product>,
+			{ categories: string } & BaseSearch
+		>({
+			query: ({ page, limit, orderBy, sortOrder, categories }) =>
+				`/?page=${page}&limit=${limit}&orderBy=${orderBy}&sortOrder=${sortOrder}&categories=${categories}`,
 			transformResponse: (response: ApiResponse<Array<Product>>) =>
 				response.data,
 		}),
