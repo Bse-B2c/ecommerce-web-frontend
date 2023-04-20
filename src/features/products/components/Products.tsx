@@ -15,7 +15,7 @@ const Products: FC<ProductsProps> = () => {
 	const {
 		orderBy = 'price',
 		sortOrder = 'ASC',
-		page = 0,
+		page = 1,
 		limit = 10,
 		categories,
 		...search
@@ -25,6 +25,7 @@ const Products: FC<ProductsProps> = () => {
 		limit: +limit || 10,
 		orderBy,
 		sortOrder,
+		categories,
 		...search,
 	});
 
@@ -38,7 +39,9 @@ const Products: FC<ProductsProps> = () => {
 			<Filters
 				orderBy={orderBy}
 				sortOrder={sortOrder}
-				categories={categories?.split(',').map(e => +e) || []}
+				categories={
+					categories === '' ? [] : categories?.split(',').map(e => +e) || []
+				}
 				onChange={onChangeParams}
 			/>
 			<ProductList

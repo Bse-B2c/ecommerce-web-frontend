@@ -21,23 +21,23 @@ const ProductList: FC<ProductListProps> = ({
 	onChangePage,
 }) => {
 	const theme = useTheme();
-	const match = useMediaQuery(theme.breakpoints.down('sm'));
+	const smBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
 
 	const content =
 		Array.isArray(data) && data.length > 0
-			? data.map(({ id, name, price, discount }, index) => (
+			? data.map(({ id, name, price, discount, images }, index) => (
 					<ProductCard
 						key={`${name}-${index}`}
 						id={id}
-						mode={match ? 'horizontal' : undefined}
+						mode={smBreakpoint ? 'horizontal' : undefined}
 						name={name}
 						price={price}
 						averageRating={4}
 						qtdReviews={100}
 						discount={discount ?? undefined}
 						image={{
-							src: 'http://localhost:4700/img/7c55d990608940063a76619cd369c742-livro.jpg',
-							description: 'testegsdfdg',
+							src: images[0],
+							description: '',
 						}}
 					/>
 			  ))
