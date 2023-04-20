@@ -18,7 +18,7 @@ import {
 	getDiscountPrice,
 } from '@utils/utilsProductPrice';
 import { Discount } from '@features/Product/model/Discount';
-import { AddShoppingCart } from '@mui/icons-material';
+import { AddShoppingCart, ProductionQuantityLimits } from '@mui/icons-material';
 import { minimizeTitle } from '@utils/utilsString';
 
 interface ProductCardStateProps {
@@ -30,6 +30,7 @@ interface ProductCardStateProps {
 	averageRating: number;
 	qtdReviews: number;
 	mode?: 'horizontal' | 'vertical';
+	quantity: number;
 }
 interface ProductCardDispatchProps {}
 
@@ -43,12 +44,35 @@ const ProductCard: FC<ProductCardProps> = ({
 	image,
 	qtdReviews,
 	averageRating,
+	quantity,
 	mode = 'vertical',
 }) => {
 	const formattedPrice = getBrazilCurrencyFormat(price);
 	const isDiscountActive = discount && discount.active;
 	const url = `/product/${id}`;
-	const title = minimizeTitle(name, 36);
+	const title = minimizeTitle(name, 22);
+
+	const contentButton =
+		quantity === 0 ? (
+			<Button
+				color="success"
+				variant="contained"
+				disableElevation
+				disabled
+				fullWidth
+				startIcon={<ProductionQuantityLimits />}>
+				Unavailable
+			</Button>
+		) : (
+			<Button
+				color="success"
+				variant="contained"
+				disableElevation
+				fullWidth
+				startIcon={<AddShoppingCart />}>
+				Add Cart
+			</Button>
+		);
 
 	const contentPrice = isDiscountActive ? (
 		<>
@@ -62,7 +86,7 @@ const ProductCard: FC<ProductCardProps> = ({
 			</Typography>
 		</>
 	) : (
-		<Typography variant="h6" fontWeight={800}>
+		<Typography variant="h6" fontWeight={800} sx={{ mt: 3 }}>
 			{formattedPrice}
 		</Typography>
 	);
@@ -84,7 +108,7 @@ const ProductCard: FC<ProductCardProps> = ({
 						<Grid item xs={7}>
 							<Link href={url} color="inherit" underline="none">
 								<Tooltip title={name} placement="right">
-									<Typography variant="body2" gutterBottom>
+									<Typography variant="body2" fontWeight={800} gutterBottom>
 										{title}
 										{isDiscountActive && (
 											<Chip
@@ -109,15 +133,7 @@ const ProductCard: FC<ProductCardProps> = ({
 								</Box>
 								{contentPrice}
 							</Link>
-							<Button
-								color="success"
-								variant="contained"
-								disableElevation
-								fullWidth
-								sx={{ mt: 2 }}
-								startIcon={<AddShoppingCart />}>
-								Add Cart
-							</Button>
+							{contentButton}
 						</Grid>
 					</Grid>
 				</CardContent>
@@ -126,13 +142,14 @@ const ProductCard: FC<ProductCardProps> = ({
 	}
 
 	return (
-		<Card variant="outlined" sx={{ width: 200, m: 1 }}>
+		<Card
+			variant="outlined"
+			sx={{ width: 200, m: 1, maxHeight: 376, minHeight: 376 }}>
 			<Box
 				sx={{
 					display: 'flex',
 					p: 1,
 					justifyContent: isDiscountActive ? 'space-between' : 'flex-end',
-					maxHeight: 376,
 				}}>
 				{isDiscountActive && (
 					<Chip label={'30% off'} color={'primary'} size={'small'} />
@@ -165,7 +182,7 @@ const ProductCard: FC<ProductCardProps> = ({
 					/>
 				</Tooltip>
 			</Link>
-			<CardContent>
+			<CardContent sx={{ minHeight: 109 }}>
 				<Link href={url} color="inherit" underline="none">
 					<Tooltip title={name} placement="right">
 						<Typography variant="body2" fontWeight={800} gutterBottom>
@@ -175,16 +192,7 @@ const ProductCard: FC<ProductCardProps> = ({
 					{contentPrice}
 				</Link>
 			</CardContent>
-			<CardActions>
-				<Button
-					color="success"
-					variant="contained"
-					disableElevation
-					fullWidth
-					startIcon={<AddShoppingCart />}>
-					Add Cart
-				</Button>
-			</CardActions>
+			<CardActions>{contentButton}</CardActions>
 		</Card>
 	);
 };
