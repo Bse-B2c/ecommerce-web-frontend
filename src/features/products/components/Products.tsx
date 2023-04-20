@@ -17,7 +17,7 @@ const Products: FC<ProductsProps> = () => {
 		sortOrder = 'ASC',
 		page = 1,
 		limit = 10,
-		categories,
+		categories = '',
 		...search
 	} = Object.fromEntries([...searchParams]);
 	const { data, isLoading } = useFindProductsQuery({
