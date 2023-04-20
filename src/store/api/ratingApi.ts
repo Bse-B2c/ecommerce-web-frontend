@@ -2,7 +2,10 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { getServiceHost } from '@utils/getServiceHost';
 import { ApiResponse } from '@src/model/ApiResponse';
 import { baseQueryWithReauth } from '@src/lib/baseQueryWithReauth';
-import { ReviewsRatingPercentage } from '@src/model/StatsRating';
+import {
+	ProductsRatingAverage,
+	ReviewsRatingPercentage,
+} from '@src/model/StatsRating';
 import { BaseSearch } from '@src/model/BaseSearch';
 
 export const ratingApi = createApi({
@@ -18,6 +21,30 @@ export const ratingApi = createApi({
 			query: idProduct => `/stats/${idProduct}/scale/average`,
 			transformResponse: (response: ApiResponse<number>) => response.data,
 		}),
+		getRatingAverages: builder.query<
+			Array<ProductsRatingAverage>,
+			Array<number>
+		>({
+			query: ids => `/stats/average?productIds=${ids.join(',')}`,
+			transformResponse: (
+				response: ApiResponse<Array<ProductsRatingAverage>>
+			): any =>
+				response
+					? response?.data.reduce(
+							(
+								acc: { [key: string]: ProductsRatingAverage } = {},
+								currentValue
+							) => {
+								const key = currentValue.productId;
+
+								if (!acc[key]) acc[key] = currentValue;
+
+								return acc;
+							},
+							{}
+					  )
+					: {},
+		}),
 		getProductReviews: builder.query<any, { productId?: number } & BaseSearch>({
 			query: ({ productId, orderBy, sortOrder, limit, page }) =>
 				`/?productId=${productId}&orderBy=${orderBy}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`,
@@ -30,4 +57,5 @@ export const {
 	useGetScalePercentageQuery,
 	useGetAverageProductReviewQuery,
 	useGetProductReviewsQuery,
+	useGetRatingAveragesQuery,
 } = ratingApi;
