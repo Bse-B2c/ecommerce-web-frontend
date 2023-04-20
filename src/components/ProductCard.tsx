@@ -19,6 +19,7 @@ import {
 } from '@utils/utilsProductPrice';
 import { Discount } from '@features/Product/model/Discount';
 import { AddShoppingCart } from '@mui/icons-material';
+import { minimizeTitle } from '@utils/utilsString';
 
 interface ProductCardStateProps {
 	id: number;
@@ -47,27 +48,28 @@ const ProductCard: FC<ProductCardProps> = ({
 	const formattedPrice = getBrazilCurrencyFormat(price);
 	const isDiscountActive = discount && discount.active;
 	const url = `/product/${id}`;
+	const title = minimizeTitle(name, 36);
 
 	const contentPrice = isDiscountActive ? (
 		<>
 			<Typography variant="body2" color={'text.secondary'} fontWeight={800}>
 				<s>{formattedPrice}</s>
 			</Typography>
-			<Typography variant="h5" fontWeight={800}>
+			<Typography variant="h6" fontWeight={800}>
 				{getBrazilCurrencyFormat(
 					getDiscountPrice(price, discount.discountPercent)
 				)}
 			</Typography>
 		</>
 	) : (
-		<Typography variant="h5" fontWeight={800}>
+		<Typography variant="h6" fontWeight={800}>
 			{formattedPrice}
 		</Typography>
 	);
 
 	if (mode === 'horizontal') {
 		return (
-			<Card variant="outlined" sx={{ width: '100%', mb: 1 }}>
+			<Card variant="outlined" sx={{ width: '100%', mb: 1, maxHeight: 376 }}>
 				<CardContent>
 					<Grid container direction={'row'} spacing={1} item xs>
 						<Grid item xs={5}>
@@ -82,8 +84,8 @@ const ProductCard: FC<ProductCardProps> = ({
 						<Grid item xs={7}>
 							<Link href={url} color="inherit" underline="none">
 								<Tooltip title={name} placement="right">
-									<Typography variant="h6" gutterBottom>
-										{name}
+									<Typography variant="body2" gutterBottom>
+										{title}
 										{isDiscountActive && (
 											<Chip
 												sx={{ ml: 1 }}
@@ -130,6 +132,7 @@ const ProductCard: FC<ProductCardProps> = ({
 					display: 'flex',
 					p: 1,
 					justifyContent: isDiscountActive ? 'space-between' : 'flex-end',
+					maxHeight: 376,
 				}}>
 				{isDiscountActive && (
 					<Chip label={'30% off'} color={'primary'} size={'small'} />
@@ -165,8 +168,8 @@ const ProductCard: FC<ProductCardProps> = ({
 			<CardContent>
 				<Link href={url} color="inherit" underline="none">
 					<Tooltip title={name} placement="right">
-						<Typography variant="h6" gutterBottom>
-							{name}
+						<Typography variant="body2" fontWeight={800} gutterBottom>
+							{title}
 						</Typography>
 					</Tooltip>
 					{contentPrice}
