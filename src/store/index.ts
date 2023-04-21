@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { productApi } from '@store/api/productApi';
 import { ratingApi } from '@store/api/ratingApi';
 import { categoryApi } from '@store/api/categoryApi';
+import { accountApi } from '@store/api/accountApi';
 
 export const store = configureStore({
 	reducer: {
 		[productApi.reducerPath]: productApi.reducer,
 		[ratingApi.reducerPath]: ratingApi.reducer,
 		[categoryApi.reducerPath]: categoryApi.reducer,
+		[accountApi.reducerPath]: accountApi.reducer,
 	},
 	devTools: true,
 	middleware: getDefaultMiddleware =>
@@ -15,6 +17,7 @@ export const store = configureStore({
 			productApi.middleware,
 			ratingApi.middleware,
 			categoryApi.middleware,
+			accountApi.middleware,
 		]),
 });
 
