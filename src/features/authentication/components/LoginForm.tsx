@@ -17,7 +17,10 @@ import { useForm } from 'react-hook-form';
 import { setTokens } from '@features/authentication';
 import { ApiResponse } from '@src/model/ApiResponse';
 import { useNavigate } from 'react-router-dom';
-import { useLoginMutation } from '@features/authentication/services/auth';
+import {
+	useLazyGetMeQuery,
+	useLoginMutation,
+} from '@features/authentication/services/auth';
 
 interface LoginFormStateProps {}
 interface LoginFormDispatchProps {}
@@ -38,6 +41,7 @@ const LoginForm: FC<LoginFormProps> = () => {
 	});
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [login, { isLoading, error, isError }] = useLoginMutation();
+	const [getMe] = useLazyGetMeQuery();
 	let alert: JSX.Element | null = null;
 
 	const handleClickShowPassword = () => setShowPassword(show => !show);
@@ -48,6 +52,7 @@ const LoginForm: FC<LoginFormProps> = () => {
 
 			setTokens({ token, refreshToken: refreshToken?.key || '' });
 			navigate('/');
+			getMe();
 		} catch (e) {}
 	});
 
