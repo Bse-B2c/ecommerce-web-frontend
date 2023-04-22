@@ -17,10 +17,7 @@ import { useForm } from 'react-hook-form';
 import { setTokens } from '@features/authentication';
 import { ApiResponse } from '@src/model/ApiResponse';
 import { useNavigate } from 'react-router-dom';
-import {
-	useLazyGetMeQuery,
-	useLoginMutation,
-} from '@features/authentication/services/auth';
+import { useLazyGetMeQuery, useLoginMutation } from '@store/api/accountApi';
 
 interface LoginFormStateProps {}
 interface LoginFormDispatchProps {}

@@ -1,15 +1,8 @@
 import React, { FC } from 'react';
-import {
-	AppBar,
-	Badge,
-	IconButton,
-	Menu,
-	MenuItem,
-	Toolbar,
-	Typography,
-} from '@mui/material';
-import { AccountCircle, ShoppingCart } from '@mui/icons-material';
+import { AppBar, Badge, IconButton, Toolbar, Typography } from '@mui/material';
+import { ShoppingCart } from '@mui/icons-material';
 import SearchInput from '@components/searchInput/SearchInput';
+import UserMenu from '@components/userMenu/userMenu';
 
 interface AppHeaderStateProps {}
 interface AppHeaderDispatchProps {}
@@ -34,31 +27,7 @@ const AppHeader: FC<AppHeaderProps> = () => {
 						<ShoppingCart />
 					</Badge>
 				</IconButton>
-				<div>
-					<IconButton
-						size="large"
-						aria-label="account of current user"
-						aria-controls="menu-appbar"
-						aria-haspopup="true"
-						color="inherit">
-						<AccountCircle />
-					</IconButton>
-					<Menu
-						id="menu-appbar"
-						anchorOrigin={{
-							vertical: 'top',
-							horizontal: 'right',
-						}}
-						keepMounted
-						transformOrigin={{
-							vertical: 'top',
-							horizontal: 'right',
-						}}
-						open={false}>
-						<MenuItem>Profile</MenuItem>
-						<MenuItem>My account</MenuItem>
-					</Menu>
-				</div>
+				<UserMenu />
 			</Toolbar>
 		</AppBar>
 	);
