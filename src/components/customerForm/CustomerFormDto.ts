@@ -33,7 +33,7 @@ const cpf = {
 };
 const phone = {
 	valid: {
-		value: new RegExp(/\(\d{2,}\) \d{5,}\-\d{4}/g),
+		value: /\(\d{2,}\) \d{5,}\-\d{4}/g,
 		message: 'Phone is not Valid',
 	},
 };
@@ -45,14 +45,10 @@ export const CustomerFormDto = object().shape({
 		.typeError('Date is not correct'),
 	name: string().required('Name is required'),
 	phone: string()
-		.test('phone', phone.valid.message, value =>
-			phone.valid.value.test(value as string)
-		)
+		.matches(phone.valid.value, phone.valid.message)
 		.required('Phone is required'),
 	cpf: string()
-		.test('cpf', cpf.valid.message, value =>
-			cpf.valid.value.test(value as string)
-		)
+		.matches(cpf.valid.value, cpf.valid.message)
 		.required('CPF is required'),
 	email: string().email('E-mail is not valid').required('E-mail is required'),
 	password: string()

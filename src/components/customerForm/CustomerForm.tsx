@@ -1,11 +1,24 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import {
+	Button,
+	Chip,
+	CircularProgress,
+	FormControl,
+	Grid,
+	IconButton,
+	InputAdornment,
+	InputLabel,
+	Link,
+	OutlinedInput,
+	TextField,
+	Typography,
+} from '@mui/material';
 import TextMaskInput from '@components/MaskInput';
 import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Check, Close } from '@mui/icons-material';
+import { Check, Close, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
 	CustomerFormDto,
 	messages,
@@ -22,14 +35,19 @@ interface CustomerFormStateProps {
 		confirmPassword: string;
 		brithDate: null | Dayjs;
 	};
+	isLoading: boolean;
 }
 interface CustomerFormDispatchProps {
-	onSubmit: <T>(data: T) => void;
+	onSubmit: (data: any) => void;
 }
 
 type CustomerFormProps = CustomerFormStateProps & CustomerFormDispatchProps;
 
-const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
+const CustomerForm: FC<CustomerFormProps> = ({
+	onSubmit,
+	defaultValues,
+	isLoading,
+}) => {
 	const {
 		register,
 		handleSubmit,
@@ -41,6 +59,14 @@ const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
 		mode: 'all',
 		defaultValues,
 	});
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showConfirmPassword, setShowConfirmPassword] =
+		useState<boolean>(false);
+
+	const handleClickShowPassword = () => setShowPassword(show => !show);
+
+	const handleClickShowConfirmPassword = () =>
+		setShowConfirmPassword(show => !show);
 
 	const getPasswordValidationError = () => {
 		let validationErrors = [];
@@ -57,7 +83,6 @@ const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
 
 		return validationErrors;
 	};
-
 	const validationErrors = getPasswordValidationError();
 	return (
 		<Grid item xs>
@@ -85,12 +110,13 @@ const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
 						<Controller
 							name={'cpf'}
 							control={control}
-							render={({ field: { onChange, name } }) => (
+							render={({ field: { onChange, name, value } }) => (
 								<TextMaskInput
 									error={!!errors?.cpf}
 									helperText={errors?.cpf?.message}
 									mask={'000.000.000-00'}
 									label="CPF*"
+									value={value}
 									onAccept={(value: any) =>
 										onChange({ target: { name: name, value } })
 									}
@@ -127,12 +153,13 @@ const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
 						<Controller
 							name={'phone'}
 							control={control}
-							render={({ field: { onChange, name } }) => (
+							render={({ field: { onChange, name, value } }) => (
 								<TextMaskInput
 									error={!!errors?.phone}
 									helperText={errors?.phone?.message}
 									mask={'(00) 00000-0000'}
 									label="Phone*"
+									value={value}
 									onAccept={(value: any) =>
 										onChange({ target: { name: name, value } })
 									}
@@ -154,14 +181,33 @@ const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
 				</Grid>
 				<Grid container item xs spacing={1} wrap={'wrap'}>
 					<Grid item xs={12} md={6}>
-						<TextField
-							error={!!errors.password}
-							{...register('password')}
-							label="Password*"
-							type={'password'}
-							size="small"
-							fullWidth
-						/>
+						<FormControl fullWidth>
+							<InputLabel
+								error={!!errors?.email?.message}
+								htmlFor={'outlined-password'}
+								size={'small'}>
+								Password*
+							</InputLabel>
+							<OutlinedInput
+								id={'outlined-password'}
+								error={!!errors.password}
+								{...register('password')}
+								label="Password*"
+								size="small"
+								fullWidth
+								type={showPassword ? 'text' : 'password'}
+								endAdornment={
+									<InputAdornment position="end">
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={handleClickShowPassword}
+											edge="end">
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
+									</InputAdornment>
+								}
+							/>
+						</FormControl>
 						{!!errors.password
 							? messages.map(message => {
 									const isErrorValidation = validationErrors.includes(message);
@@ -181,15 +227,42 @@ const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
 							: null}
 					</Grid>
 					<Grid item xs={12} md={6}>
-						<TextField
-							{...register('confirmPassword')}
-							error={!!errors.confirmPassword}
-							helperText={errors?.confirmPassword?.message}
-							type={'password'}
-							label="Confirm your Password*"
-							size="small"
-							fullWidth
-						/>
+						<FormControl fullWidth>
+							<InputLabel
+								error={!!errors?.email?.message}
+								htmlFor={'outlined-confirm-password'}
+								size={'small'}>
+								Confirm your Password*
+							</InputLabel>
+							<OutlinedInput
+								id="outlined-confirm-password"
+								{...register('confirmPassword')}
+								error={!!errors.confirmPassword}
+								label="Confirm your Password*"
+								size="small"
+								type={showConfirmPassword ? 'text' : 'password'}
+								endAdornment={
+									<InputAdornment position="end">
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={handleClickShowConfirmPassword}
+											edge="end">
+											{showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
+									</InputAdornment>
+								}
+								fullWidth
+							/>
+							{!!errors?.confirmPassword && (
+								<Typography
+									variant={'body2'}
+									fontSize={12}
+									color={'red'}
+									sx={{ mt: 1 }}>
+									{errors?.confirmPassword?.message}
+								</Typography>
+							)}
+						</FormControl>
 					</Grid>
 				</Grid>
 				<Grid item xs>
@@ -199,7 +272,11 @@ const CustomerForm: FC<CustomerFormProps> = ({ onSubmit, defaultValues }) => {
 						color="primary"
 						variant="contained"
 						fullWidth>
-						Create
+						{!isLoading ? (
+							<span>Create</span>
+						) : (
+							<CircularProgress color={'inherit'} size={25} />
+						)}
 					</Button>
 				</Grid>
 				<Grid item xs textAlign="center">

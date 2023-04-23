@@ -9,6 +9,23 @@ export const accountApi = createApi({
 	reducerPath: 'accountApi',
 	baseQuery: baseQueryWithReauth(`${getServiceHost('account')}/api/account`),
 	endpoints: builder => ({
+		createCustomer: builder.mutation<
+			User,
+			{
+				name: string;
+				email: string;
+				password: string;
+				phone: string;
+				cpf: string;
+				brithDate: string;
+			}
+		>({
+			query: body => ({
+				url: '/user/',
+				method: 'POST',
+				body,
+			}),
+		}),
 		login: builder.mutation<Tokens, { email: string; password: string }>({
 			query: body => ({
 				url: 'auth/signin',
@@ -26,4 +43,8 @@ export const accountApi = createApi({
 	}),
 });
 
-export const { useLoginMutation, useLazyGetMeQuery } = accountApi;
+export const {
+	useLoginMutation,
+	useLazyGetMeQuery,
+	useCreateCustomerMutation,
+} = accountApi;
