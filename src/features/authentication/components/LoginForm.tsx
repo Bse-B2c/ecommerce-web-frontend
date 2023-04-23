@@ -166,7 +166,7 @@ const LoginForm: FC<LoginFormProps> = () => {
 				</Button>
 			</Grid>
 			<Grid item xs textAlign={'center'}>
-				<Link href="#" variant="body2">
+				<Link href="/signup" variant="body2">
 					Sign Up
 				</Link>
 			</Grid>
