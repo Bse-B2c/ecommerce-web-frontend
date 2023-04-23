@@ -133,7 +133,7 @@ const UserMenu: FC<UserMenuProps> = () => {
 		<Box>
 			<Button
 				sx={{ mr: 1, ml: 1 }}
-				href={'/singnup'}
+				href={'/signup'}
 				size={'small'}
 				variant={'outlined'}
 				color={'inherit'}>
