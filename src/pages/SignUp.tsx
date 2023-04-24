@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Grid, Typography } from '@mui/material';
-import SignUpForm from '@features/signUp/components/SignUpForm';
+import { SignUpForm } from '@features/signUp';
 
 interface SignUpStateProps {}
 interface SignUpDispatchProps {}
