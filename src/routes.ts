@@ -1,11 +1,22 @@
-import { lazy } from 'react';
+import { lazy, LazyExoticComponent } from 'react';
 
 const Login = lazy(() => import('@pages/Login'));
 const SignUp = lazy(() => import('@pages/SignUp'));
 const Product = lazy(() => import('@pages/Product'));
 const Products = lazy(() => import('@pages/Products'));
+const Account = lazy(() => import('@pages/Account'));
 
-export const routes = [
+interface BasicRoute {
+	name: string;
+	path: string;
+	element: LazyExoticComponent<any>;
+}
+
+interface Route extends BasicRoute {
+	children?: Array<BasicRoute>;
+}
+
+export const routes: Array<Route> = [
 	{
 		name: 'Login',
 		path: '/login',
@@ -25,5 +36,10 @@ export const routes = [
 		name: 'Product',
 		path: '/product/:id',
 		element: Product,
+	},
+	{
+		name: 'Account',
+		path: '/account',
+		element: Account,
 	},
 ];

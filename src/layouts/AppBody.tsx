@@ -20,6 +20,26 @@ const AppBody: FC<AppBodyProps> = () => {
 					{routes.map((route, index) => {
 						const Element = route.element;
 
+						if (route.children) {
+							return (
+								<Route
+									path={route.path}
+									key={`${route.name}-${index}`}
+									element={<Element />}>
+									{route.children.map((nestedRoute, i) => {
+										const NestedElement = nestedRoute.element;
+										return (
+											<Route
+												path={nestedRoute.path}
+												key={`${nestedRoute.name}-${i}`}
+												element={<NestedElement />}
+											/>
+										);
+									})}
+								</Route>
+							);
+						}
+
 						return (
 							<Route
 								path={route.path}

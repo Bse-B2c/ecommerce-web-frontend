@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from '@src/App';
 import { BrowserRouter } from 'react-router-dom';
@@ -11,8 +11,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
 		<BrowserRouter>
 			<Provider store={store}>
-				<Notification />
-				<App />
+				<Suspense>
+					<Notification />
+					<App />
+				</Suspense>
 			</Provider>
 		</BrowserRouter>
 	</React.StrictMode>
