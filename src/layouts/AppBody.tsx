@@ -1,7 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, lazy } from 'react';
 import { Container, Toolbar } from '@mui/material';
 import { routes } from '@src/routes';
 import { Route, Routes } from 'react-router-dom';
+
+const RequireAuth = lazy(
+	() => import('@features/authentication/components/RequireAuth')
+);
 
 interface AppBodyStateProps {}
 interface AppBodyDispatchProps {}
@@ -20,32 +24,28 @@ const AppBody: FC<AppBodyProps> = () => {
 					{routes.map((route, index) => {
 						const Element = route.element;
 
-						if (route.children) {
-							return (
+						return (
+							<Route
+								key={`auth-${route.auth}-${index}`}
+								element={route.auth && <RequireAuth />}>
 								<Route
 									path={route.path}
 									key={`${route.name}-${index}`}
 									element={<Element />}>
-									{route.children.map((nestedRoute, i) => {
-										const NestedElement = nestedRoute.element;
-										return (
-											<Route
-												path={nestedRoute.path}
-												key={`${nestedRoute.name}-${i}`}
-												element={<NestedElement />}
-											/>
-										);
-									})}
+									{route.children
+										? route.children.map((nestedRoute, i) => {
+												const NestedElement = nestedRoute.element;
+												return (
+													<Route
+														path={nestedRoute.path}
+														key={`${nestedRoute.name}-${i}`}
+														element={<NestedElement />}
+													/>
+												);
+										  })
+										: null}
 								</Route>
-							);
-						}
-
-						return (
-							<Route
-								path={route.path}
-								key={`${route.name}-${index}`}
-								element={<Element />}
-							/>
+							</Route>
 						);
 					})}
 				</Routes>

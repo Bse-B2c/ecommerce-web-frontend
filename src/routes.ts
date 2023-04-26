@@ -5,6 +5,7 @@ const SignUp = lazy(() => import('@pages/SignUp'));
 const Product = lazy(() => import('@pages/Product'));
 const Products = lazy(() => import('@pages/Products'));
 const Account = lazy(() => import('@pages/Account'));
+const MyData = lazy(() => import('@pages/MyData'));
 
 interface BasicRoute {
 	name: string;
@@ -43,5 +44,12 @@ export const routes: Array<Route> = [
 		path: '/account',
 		auth: true,
 		element: Account,
+		children: [
+			{
+				name: 'My Data',
+				path: 'data',
+				element: MyData,
+			},
+		],
 	},
 ];
