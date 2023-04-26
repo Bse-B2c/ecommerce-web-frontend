@@ -22,6 +22,7 @@ import {
 } from '@features/authentication';
 import { useLazyGetMeQuery } from '@store/api/accountApi';
 import { useAuthUser } from '@hooks/useAuthUser';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface UserMenuStateProps {}
 interface UserMenuDispatchProps {}
@@ -30,7 +31,7 @@ type UserMenuProps = UserMenuStateProps & UserMenuDispatchProps;
 
 const UserMenu: FC<UserMenuProps> = () => {
 	const [getMe] = useLazyGetMeQuery();
-	const user = useAuthUser();
+	const { user } = useAuthUser();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 
@@ -38,7 +39,7 @@ const UserMenu: FC<UserMenuProps> = () => {
 		const token = getToken();
 		const refreshToken = getRefreshToken();
 
-		if (token && refreshToken) {
+		if (token || refreshToken) {
 			getMe();
 		}
 	}, []);
@@ -96,19 +97,19 @@ const UserMenu: FC<UserMenuProps> = () => {
 					}}
 					transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 					anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
-					<MenuItem component={Link} href="/account">
+					<MenuItem component={RouterLink} to="/account/data">
 						<ListItemIcon>
 							<Person />
 						</ListItemIcon>
 						My account
 					</MenuItem>
-					<MenuItem component={Link} href="/account/order">
+					<MenuItem component={RouterLink} to="/account/order">
 						<ListItemIcon>
 							<ShoppingBasket />
 						</ListItemIcon>
 						My order history
 					</MenuItem>
-					<MenuItem component={Link} href="/account/reviews">
+					<MenuItem component={RouterLink} to="/account/reviews">
 						<ListItemIcon>
 							<StarHalf />
 						</ListItemIcon>
