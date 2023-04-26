@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
 import { Button, Grid } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
-import { useAuthUser } from '@hooks/useAuthUser';
 import { AccountTabs, UserAvatar } from '@features/account';
+import { User } from '@features/authentication';
 
 interface AccountStateProps {}
 interface AccountDispatchProps {}
@@ -11,7 +11,7 @@ interface AccountDispatchProps {}
 type AccountProps = AccountStateProps & AccountDispatchProps;
 
 const Account: FC<AccountProps> = () => {
-	const user = useAuthUser();
+	const { user } = useOutletContext<{ user: User }>();
 
 	return (
 		<Grid container item xs spacing={2} direction={'column'}>
