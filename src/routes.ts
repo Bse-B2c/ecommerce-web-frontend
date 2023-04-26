@@ -9,6 +9,7 @@ const Account = lazy(() => import('@pages/Account'));
 interface BasicRoute {
 	name: string;
 	path: string;
+	auth?: boolean;
 	element: LazyExoticComponent<any>;
 }
 
@@ -40,6 +41,7 @@ export const routes: Array<Route> = [
 	{
 		name: 'Account',
 		path: '/account',
+		auth: true,
 		element: Account,
 	},
 ];
