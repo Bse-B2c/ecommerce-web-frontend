@@ -1,9 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/dist/query/react';
 import { baseQueryWithReauth } from '@src/lib/baseQueryWithReauth';
 import { getServiceHost } from '@utils/getServiceHost';
-import { Tokens } from '@features/authentication';
+import { Addresses, Tokens } from '@features/authentication';
 import { ApiResponse } from '@src/model/ApiResponse';
 import { User } from '@features/authentication/model/User';
+import { BaseSearch } from '@src/model/BaseSearch';
 
 export const accountApi = createApi({
 	reducerPath: 'accountApi',
@@ -40,6 +41,13 @@ export const accountApi = createApi({
 				return response.data;
 			},
 		}),
+		getMeAddress: builder.query<Array<Addresses>, BaseSearch>({
+			query: ({ orderBy, sortOrder, limit, page }) =>
+				`/address/me?page=${page}&limit=${limit}&sortOrder=${sortOrder}&orderBy=${orderBy}`,
+			transformResponse: (response: ApiResponse<Array<Addresses>>) => {
+				return response.data;
+			},
+		}),
 	}),
 });
 
@@ -47,4 +55,5 @@ export const {
 	useLoginMutation,
 	useLazyGetMeQuery,
 	useCreateCustomerMutation,
+	useGetMeAddressQuery,
 } = accountApi;
