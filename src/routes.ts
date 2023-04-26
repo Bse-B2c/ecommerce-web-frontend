@@ -1,5 +1,6 @@
 import { lazy, LazyExoticComponent } from 'react';
 
+const Unauthorized = lazy(() => import('@pages/Unauthorized'));
 const Login = lazy(() => import('@pages/Login'));
 const SignUp = lazy(() => import('@pages/SignUp'));
 const Product = lazy(() => import('@pages/Product'));
@@ -19,6 +20,11 @@ interface Route extends BasicRoute {
 }
 
 export const routes: Array<Route> = [
+	{
+		name: 'Unauthorize',
+		path: '/unauthorized',
+		element: Unauthorized,
+	},
 	{
 		name: 'Login',
 		path: '/login',
