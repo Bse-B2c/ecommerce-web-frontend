@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 import { Grid, IconButton, Pagination, Typography } from '@mui/material';
 import Address from '@components/Address';
 import {
+	useAddPinnedAddressMutation,
 	useDeleteAddressMutation,
 	useGetMeAddressQuery,
 } from '@store/api/accountApi';
@@ -22,6 +23,7 @@ type AddressesProps = AddressesStateProps & AddressesDispatchProps;
 const Addresses: FC<AddressesProps> = ({ userId }) => {
 	const dispatch = useDispatch();
 	const [onDeleteAddress] = useDeleteAddressMutation();
+	const [onPinnedAddress] = useAddPinnedAddressMutation();
 	const [page, setPage] = useState(1);
 	const [modal, setModal] = useState<{
 		isOpen: boolean;
@@ -76,6 +78,25 @@ const Addresses: FC<AddressesProps> = ({ userId }) => {
 		}
 	};
 
+	const onPinned = async (id: number) => {
+		try {
+			await onPinnedAddress(id).unwrap();
+
+			dispatch(
+				showNotification({
+					type: 'success',
+					message: 'Address pinned successfully',
+				})
+			);
+		} catch (e) {
+			const error = e as { data: ApiResponse<null> };
+			const message = error?.data?.error
+				? error.data.error.message
+				: 'Something went wrong';
+
+			dispatch(showNotification({ type: 'error', message }));
+		}
+	};
 	return (
 		<Grid container direction={'column'} spacing={1}>
 			<Grid item xs>
@@ -112,11 +133,13 @@ const Addresses: FC<AddressesProps> = ({ userId }) => {
 										apartment={address.apartment}
 										zipCode={address.zipCode}
 										city={address.city}
+										region={address.region}
 										country={address.country}
 										onEdit={() => {
 											onOpenEditModal(address);
 										}}
 										onDelete={onDelete}
+										onPinned={onPinned}
 									/>
 								</Grid>
 							);

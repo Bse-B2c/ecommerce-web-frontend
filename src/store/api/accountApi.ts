@@ -76,6 +76,13 @@ export const accountApi = createApi({
 			}),
 			invalidatesTags: ['Address'],
 		}),
+		addPinnedAddress: builder.mutation<Addresses, number>({
+			query: id => ({
+				url: `/address/${id}/active`,
+				method: 'PATCH',
+			}),
+			invalidatesTags: ['Address'],
+		}),
 	}),
 });
 
@@ -87,4 +94,5 @@ export const {
 	useEditAddressMutation,
 	useCreateAddressMutation,
 	useDeleteAddressMutation,
+	useAddPinnedAddressMutation,
 } = accountApi;

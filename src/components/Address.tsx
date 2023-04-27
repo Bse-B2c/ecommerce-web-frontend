@@ -20,6 +20,7 @@ interface AddressStateProps {
 	apartment: string;
 	houseNumber: number;
 	zipCode: string;
+	region: string;
 }
 interface AddressDispatchProps {
 	onDelete?: (id: number) => void;
@@ -39,6 +40,7 @@ const Address: FC<AddressProps> = ({
 	zipCode,
 	city,
 	country,
+	region,
 	onDelete,
 	onEdit,
 	onPinned,
@@ -62,7 +64,7 @@ const Address: FC<AddressProps> = ({
 					House Number: {houseNumber}, {apartment}
 				</Typography>
 				<Typography variant="body2">
-					Cep {zipCode} - {city} - {country}
+					Cep {zipCode} - {region}, {city} - {country}
 				</Typography>
 			</CardContent>
 			{!isViewMode && (
