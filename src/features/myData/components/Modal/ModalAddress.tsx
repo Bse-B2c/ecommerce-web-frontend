@@ -8,12 +8,16 @@ import { useLazyGetZipCodeQuery } from '@store/api/zipCodeApi';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AddressFormDto } from '@features/myData/components/Modal/AddressFormDto';
-import { useEditAddressMutation } from '@store/api/accountApi';
+import {
+	useCreateAddressMutation,
+	useEditAddressMutation,
+} from '@store/api/accountApi';
 import { showNotification } from '@store/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
 import { ApiResponse } from '@src/model/ApiResponse';
 
 interface ModalAddressStateProps {
+	userId: number;
 	isOpen: boolean;
 	isEdit: boolean;
 	address?: Addresses;
@@ -25,12 +29,14 @@ interface ModalAddressDispatchProps {
 type ModalAddressProps = ModalAddressStateProps & ModalAddressDispatchProps;
 
 const ModalAddress: FC<ModalAddressProps> = ({
+	userId,
 	isOpen,
 	isEdit,
 	address,
 	onClose,
 }) => {
 	const [onEditAddress] = useEditAddressMutation();
+	const [onCreateAddress] = useCreateAddressMutation();
 	const [getZipCode] = useLazyGetZipCodeQuery();
 	const dispatch = useDispatch();
 	const {
@@ -46,15 +52,13 @@ const ModalAddress: FC<ModalAddressProps> = ({
 		mode: 'all',
 	});
 	useEffect(() => {
-		if (isEdit) {
-			setValue('zipCode', address?.zipCode || '');
-			setValue('streetName', address?.streetName || '');
-			setValue('city', address?.city || '');
-			setValue('country', address?.country || '');
-			setValue('district', address?.region || '');
-			setValue('houseNumber', address?.houseNumber || '');
-			setValue('apartment', address?.apartment || '');
-		}
+		setValue('zipCode', isEdit ? address?.zipCode : '');
+		setValue('streetName', isEdit ? address?.streetName : '');
+		setValue('city', isEdit ? address?.city : '');
+		setValue('country', isEdit ? address?.country : '');
+		setValue('district', isEdit ? address?.region : '');
+		setValue('houseNumber', isEdit ? address?.houseNumber : '');
+		setValue('apartment', isEdit ? address?.apartment : '');
 	}, [isEdit, address]);
 
 	const onCheckZipCode = async (e: any) => {
@@ -87,6 +91,20 @@ const ModalAddress: FC<ModalAddressProps> = ({
 					showNotification({
 						type: 'success',
 						message: 'Address successfully edited',
+					})
+				);
+			} else {
+				await onCreateAddress({
+					...data,
+					userId,
+					houseNumber: +data.houseNumber,
+					region: data.district,
+				}).unwrap();
+
+				dispatch(
+					showNotification({
+						type: 'success',
+						message: 'Address created successfully',
 					})
 				);
 			}
