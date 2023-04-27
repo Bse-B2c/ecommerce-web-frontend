@@ -1,10 +1,16 @@
 import React, { FC, useState } from 'react';
 import { Grid, IconButton, Pagination, Typography } from '@mui/material';
 import Address from '@components/Address';
-import { useGetMeAddressQuery } from '@store/api/accountApi';
+import {
+	useDeleteAddressMutation,
+	useGetMeAddressQuery,
+} from '@store/api/accountApi';
 import { Addresses as AddressType } from '@features/authentication';
 import ModalAddress from '@features/myData/components/Modal/ModalAddress';
 import { Add } from '@mui/icons-material';
+import { showNotification } from '@store/notification/notificationSlice';
+import { useDispatch } from 'react-redux';
+import { ApiResponse } from '@src/model/ApiResponse';
 
 interface AddressesStateProps {
 	userId: number;
@@ -14,6 +20,8 @@ interface AddressesDispatchProps {}
 type AddressesProps = AddressesStateProps & AddressesDispatchProps;
 
 const Addresses: FC<AddressesProps> = ({ userId }) => {
+	const dispatch = useDispatch();
+	const [onDeleteAddress] = useDeleteAddressMutation();
 	const [page, setPage] = useState(1);
 	const [modal, setModal] = useState<{
 		isOpen: boolean;
@@ -47,6 +55,26 @@ const Addresses: FC<AddressesProps> = ({ userId }) => {
 			isEdit: false,
 			data: undefined,
 		});
+
+	const onDelete = async (id: number) => {
+		try {
+			await onDeleteAddress(id).unwrap();
+
+			dispatch(
+				showNotification({
+					type: 'success',
+					message: 'Address deleted successfully',
+				})
+			);
+		} catch (e) {
+			const error = e as { data: ApiResponse<null> };
+			const message = error?.data?.error
+				? error.data.error.message
+				: 'Something went wrong';
+
+			dispatch(showNotification({ type: 'error', message }));
+		}
+	};
 
 	return (
 		<Grid container direction={'column'} spacing={1}>
@@ -88,7 +116,7 @@ const Addresses: FC<AddressesProps> = ({ userId }) => {
 										onEdit={() => {
 											onOpenEditModal(address);
 										}}
-										onDelete={() => {}}
+										onDelete={onDelete}
 									/>
 								</Grid>
 							);
