@@ -9,6 +9,7 @@ import { BaseSearch } from '@src/model/BaseSearch';
 export const accountApi = createApi({
 	reducerPath: 'accountApi',
 	baseQuery: baseQueryWithReauth(`${getServiceHost('account')}/api/account`),
+	tagTypes: ['Address'],
 	endpoints: builder => ({
 		createCustomer: builder.mutation<
 			User,
@@ -47,6 +48,15 @@ export const accountApi = createApi({
 			transformResponse: (response: ApiResponse<Array<Addresses>>) => {
 				return response.data;
 			},
+			providesTags: ['Address'],
+		}),
+		editAddress: builder.mutation<Addresses, Addresses>({
+			query: ({ id, ...body }) => ({
+				url: `/address/${id}`,
+				method: 'PUT',
+				body,
+			}),
+			invalidatesTags: ['Address'],
 		}),
 	}),
 });
@@ -56,4 +66,5 @@ export const {
 	useLazyGetMeQuery,
 	useCreateCustomerMutation,
 	useGetMeAddressQuery,
+	useEditAddressMutation,
 } = accountApi;
