@@ -26,8 +26,13 @@ const Addresses: FC<AddressesProps> = () => {
 
 	const onChange = (e: unknown, newPage: number) => setPage(newPage);
 
-	const onToggle = () => {
-		setModal(prevState => ({ ...prevState, isOpen: !prevState.isOpen }));
+	const onClose = () => {
+		setModal(prevState => ({
+			...prevState,
+			isOpen: false,
+			isEdit: false,
+			data: undefined,
+		}));
 	};
 
 	const onOpenEditModal = (data: AddressType) =>
@@ -38,7 +43,7 @@ const Addresses: FC<AddressesProps> = () => {
 			<ModalAddress
 				isOpen={modal.isOpen}
 				isEdit={modal.isEdit}
-				onToggle={onToggle}
+				onClose={onClose}
 				address={modal.data}
 			/>
 			<Grid item>

@@ -8,6 +8,10 @@ import { useLazyGetZipCodeQuery } from '@store/api/zipCodeApi';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AddressFormDto } from '@features/myData/components/Modal/AddressFormDto';
+import { useEditAddressMutation } from '@store/api/accountApi';
+import { showNotification } from '@store/notification/notificationSlice';
+import { useDispatch } from 'react-redux';
+import { ApiResponse } from '@src/model/ApiResponse';
 
 interface ModalAddressStateProps {
 	isOpen: boolean;
@@ -15,7 +19,7 @@ interface ModalAddressStateProps {
 	address?: Addresses;
 }
 interface ModalAddressDispatchProps {
-	onToggle: () => void;
+	onClose: () => void;
 }
 
 type ModalAddressProps = ModalAddressStateProps & ModalAddressDispatchProps;
@@ -24,9 +28,11 @@ const ModalAddress: FC<ModalAddressProps> = ({
 	isOpen,
 	isEdit,
 	address,
-	onToggle,
+	onClose,
 }) => {
+	const [onEditAddress] = useEditAddressMutation();
 	const [getZipCode] = useLazyGetZipCodeQuery();
+	const dispatch = useDispatch();
 	const {
 		register,
 		setValue,
@@ -65,12 +71,41 @@ const ModalAddress: FC<ModalAddressProps> = ({
 			}
 		} catch (e) {}
 	};
+
+	const onSubmit = async (data: any) => {
+		try {
+			if (isEdit) {
+				await onEditAddress({
+					id: address?.id || -1,
+					...data,
+					houseNumber: +data.houseNumber,
+					active: address?.active || false,
+					region: data.district,
+				}).unwrap();
+
+				dispatch(
+					showNotification({
+						type: 'success',
+						message: 'Address successfully edited',
+					})
+				);
+			}
+
+			onClose();
+		} catch (e) {
+			const error = e as { data: ApiResponse<null> };
+			const message = error?.data?.error
+				? error.data.error.message
+				: 'Something went wrong';
+
+			dispatch(showNotification({ type: 'error', message }));
+		}
+	};
+
 	return (
-		<Modal open={isOpen} onClose={onToggle} buttonClose>
+		<Modal open={isOpen} onClose={onClose} buttonClose>
 			<Modal.Header>{isEdit ? 'Edit Address' : 'Add Address'}</Modal.Header>
-			<FormControl
-				component="form"
-				onSubmit={handleSubmit(data => console.log(data))}>
+			<FormControl component="form" onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Content>
 					<AddressForm
 						watch={watch}
@@ -87,7 +122,7 @@ const ModalAddress: FC<ModalAddressProps> = ({
 							disableElevation
 							startIcon={<Close />}
 							sx={{ mr: 1 }}
-							onClick={onToggle}>
+							onClick={onClose}>
 							Close
 						</Button>
 						<Button
