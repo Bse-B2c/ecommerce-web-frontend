@@ -60,7 +60,11 @@ const Modal: FC<ModalProps> & ModalComposition = ({
 		})`,
 	};
 	return (
-		<MuiModal open={open} onClose={onClose} keepMounted>
+		<MuiModal
+			open={open}
+			onClose={onClose}
+			keepMounted
+			sx={{ overflow: 'auto' }}>
 			<ModalContext.Provider value={{ onClose, buttonClose }}>
 				<Grid
 					container
