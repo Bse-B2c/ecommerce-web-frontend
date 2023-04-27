@@ -58,6 +58,17 @@ export const accountApi = createApi({
 			}),
 			invalidatesTags: ['Address'],
 		}),
+		createAddress: builder.mutation<
+			Addresses,
+			Omit<Addresses, 'id'> & { userId: number }
+		>({
+			query: body => ({
+				url: `/address`,
+				method: 'POST',
+				body,
+			}),
+			invalidatesTags: ['Address'],
+		}),
 	}),
 });
 
@@ -67,4 +78,5 @@ export const {
 	useCreateCustomerMutation,
 	useGetMeAddressQuery,
 	useEditAddressMutation,
+	useCreateAddressMutation,
 } = accountApi;
