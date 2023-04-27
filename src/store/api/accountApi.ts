@@ -69,6 +69,13 @@ export const accountApi = createApi({
 			}),
 			invalidatesTags: ['Address'],
 		}),
+		deleteAddress: builder.mutation<Addresses, number>({
+			query: id => ({
+				url: `/address/${id}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: ['Address'],
+		}),
 	}),
 });
 
@@ -79,4 +86,5 @@ export const {
 	useGetMeAddressQuery,
 	useEditAddressMutation,
 	useCreateAddressMutation,
+	useDeleteAddressMutation,
 } = accountApi;
