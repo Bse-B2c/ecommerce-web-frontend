@@ -12,6 +12,7 @@ import { Add } from '@mui/icons-material';
 import { showNotification } from '@store/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
 import { ApiResponse } from '@src/model/ApiResponse';
+import Swall from 'sweetalert2';
 
 interface AddressesStateProps {
 	userId: number;
@@ -59,43 +60,67 @@ const Addresses: FC<AddressesProps> = ({ userId }) => {
 		});
 
 	const onDelete = async (id: number) => {
-		try {
-			await onDeleteAddress(id).unwrap();
+		Swall.fire({
+			title: 'Delete Address?',
+			text: 'Are you sure you want to delete this Address?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#42a5f5',
+			cancelButtonColor: '#ef5350',
+			confirmButtonText: 'Yes, delete it!',
+		}).then(async result => {
+			if (result.isConfirmed) {
+				try {
+					await onDeleteAddress(id).unwrap();
 
-			dispatch(
-				showNotification({
-					type: 'success',
-					message: 'Address deleted successfully',
-				})
-			);
-		} catch (e) {
-			const error = e as { data: ApiResponse<null> };
-			const message = error?.data?.error
-				? error.data.error.message
-				: 'Something went wrong';
+					dispatch(
+						showNotification({
+							type: 'success',
+							message: 'Address deleted successfully',
+						})
+					);
+				} catch (e) {
+					const error = e as { data: ApiResponse<null> };
+					const message = error?.data?.error
+						? error.data.error.message
+						: 'Something went wrong';
 
-			dispatch(showNotification({ type: 'error', message }));
-		}
+					dispatch(showNotification({ type: 'error', message }));
+				}
+			}
+		});
 	};
 
 	const onPinned = async (id: number) => {
-		try {
-			await onPinnedAddress(id).unwrap();
+		Swall.fire({
+			title: 'Pin Address',
+			text: 'Are you sure you want to pin this address?',
+			icon: 'warning',
+			confirmButtonText: 'Yes, pin it!',
+			showCancelButton: true,
+			confirmButtonColor: '#42a5f5',
+			cancelButtonColor: '#ef5350',
+		}).then(async result => {
+			if (result.isConfirmed) {
+				try {
+					await onPinnedAddress(id).unwrap();
 
-			dispatch(
-				showNotification({
-					type: 'success',
-					message: 'Address pinned successfully',
-				})
-			);
-		} catch (e) {
-			const error = e as { data: ApiResponse<null> };
-			const message = error?.data?.error
-				? error.data.error.message
-				: 'Something went wrong';
+					dispatch(
+						showNotification({
+							type: 'success',
+							message: 'Address pinned successfully',
+						})
+					);
+				} catch (e) {
+					const error = e as { data: ApiResponse<null> };
+					const message = error?.data?.error
+						? error.data.error.message
+						: 'Something went wrong';
 
-			dispatch(showNotification({ type: 'error', message }));
-		}
+					dispatch(showNotification({ type: 'error', message }));
+				}
+			}
+		});
 	};
 	return (
 		<Grid container direction={'column'} spacing={1}>

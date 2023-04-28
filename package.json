@@ -23,6 +23,7 @@
     "react-imask": "^6.6.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.9.0",
+    "sweetalert2": "^11.7.3",
     "yup": "^1.1.1"
   },
   "devDependencies": {
