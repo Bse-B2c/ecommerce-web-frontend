@@ -38,7 +38,7 @@ const phone = {
 	},
 };
 
-export const CustomerFormDto = object().shape({
+export const baseCustomerFormDto = {
 	brithDate: date()
 		.max(new Date(), 'Birth date cannot be greater than the current date')
 		.required('Brirth date is required')
@@ -51,6 +51,10 @@ export const CustomerFormDto = object().shape({
 		.matches(cpf.valid.value, cpf.valid.message)
 		.required('CPF is required'),
 	email: string().email('E-mail is not valid').required('E-mail is required'),
+};
+
+export const CustomerFormDto = object().shape({
+	...baseCustomerFormDto,
 	password: string()
 		.matches(password.lowerCaseRegex.value, password.lowerCaseRegex.message)
 		.matches(password.upperCaseRegex.value, password.upperCaseRegex.message)

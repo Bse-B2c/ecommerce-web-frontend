@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { User } from '@features/authentication';
 import { Card, CardContent, Grid } from '@mui/material';
-import { Addresses, CustomerInfo } from '@features/myData';
+import { Addresses, Customer } from '@features/myData';
 
 interface MyDataStateProps {}
 interface MyDataDispatchProps {}
@@ -14,15 +14,7 @@ const MyData: FC<MyDataProps> = () => {
 	return (
 		<Grid container item xs spacing={2}>
 			<Grid item xs={5} md={4}>
-				<CustomerInfo
-					id={user?.id || -1}
-					name={user?.name || ''}
-					email={user?.email || ''}
-					phone={user?.phone || ''}
-					cpf={user?.cpf || ''}
-					brithDate={user?.brithDate || ''}
-					onEdit={() => {}}
-				/>
+				<Customer user={user} />
 			</Grid>
 			<Grid item xs={7} md={8}>
 				<Card variant={'outlined'}>

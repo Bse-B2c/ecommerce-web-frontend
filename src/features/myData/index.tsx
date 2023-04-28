@@ -1,4 +1,4 @@
 import Addresses from '@features/myData/components/Addresses';
-import CustomerInfo from '@features/myData/components/CustomerInfo';
+import Customer from '@features/myData/components/Customer';
 
-export { CustomerInfo, Addresses };
+export { Customer, Addresses };

@@ -183,7 +183,7 @@ const CustomerForm: FC<CustomerFormProps> = ({
 					<Grid item xs={12} md={6}>
 						<FormControl fullWidth>
 							<InputLabel
-								error={!!errors?.email?.message}
+								error={!!errors?.password?.message}
 								htmlFor={'outlined-password'}
 								size={'small'}>
 								Password*
