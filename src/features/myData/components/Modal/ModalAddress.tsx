@@ -45,6 +45,8 @@ const ModalAddress: FC<ModalAddressProps> = ({
 		watch,
 		setFocus,
 		handleSubmit,
+		clearErrors,
+		reset,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(AddressFormDto),
@@ -109,6 +111,8 @@ const ModalAddress: FC<ModalAddressProps> = ({
 				);
 			}
 
+			reset();
+			clearErrors();
 			onClose();
 		} catch (e) {
 			const error = e as { data: ApiResponse<null> };
@@ -121,7 +125,14 @@ const ModalAddress: FC<ModalAddressProps> = ({
 	};
 
 	return (
-		<Modal open={isOpen} onClose={onClose} buttonClose>
+		<Modal
+			open={isOpen}
+			onClose={() => {
+				reset();
+				clearErrors();
+				onClose();
+			}}
+			buttonClose>
 			<Modal.Header>{isEdit ? 'Edit Address' : 'Add Address'}</Modal.Header>
 			<FormControl component="form" onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Content>
@@ -140,7 +151,11 @@ const ModalAddress: FC<ModalAddressProps> = ({
 							disableElevation
 							startIcon={<Close />}
 							sx={{ mr: 1 }}
-							onClick={onClose}>
+							onClick={() => {
+								reset();
+								clearErrors();
+								onClose();
+							}}>
 							Close
 						</Button>
 						<Button
