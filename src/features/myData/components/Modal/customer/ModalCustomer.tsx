@@ -8,6 +8,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { object } from 'yup';
 import { baseCustomerFormDto } from '@components/customerForm/CustomerFormDto';
 import dayjs from 'dayjs';
+import { useUpdateMeMutation } from '@store/api/accountApi';
+import { ApiResponse } from '@src/model/ApiResponse';
+import { showNotification } from '@store/notification/notificationSlice';
+import { useDispatch } from 'react-redux';
 
 interface ModalCustomerStateProps {
 	isOpen: boolean;
@@ -20,6 +24,8 @@ interface ModalCustomerDispatchProps {
 type ModalCustomerProps = ModalCustomerStateProps & ModalCustomerDispatchProps;
 
 const ModalCustomer: FC<ModalCustomerProps> = ({ isOpen, onClose, data }) => {
+	const dispatch = useDispatch();
+	const [updateMe] = useUpdateMeMutation();
 	const {
 		control,
 		register,
@@ -51,6 +57,32 @@ const ModalCustomer: FC<ModalCustomerProps> = ({ isOpen, onClose, data }) => {
 		);
 	}, [data]);
 
+	const onSubmit = async (data: any) => {
+		try {
+			await updateMe({
+				...data,
+				brithDate: data.brithDate ? data.brithDate.toISOString() : null,
+			}).unwrap();
+
+			dispatch(
+				showNotification({
+					type: 'success',
+					message: 'User updated successfully',
+				})
+			);
+
+			onClose();
+		} catch (e) {
+			const error = e as { data: ApiResponse<null> };
+			const message = error?.data?.error
+				? error.data.error.message
+				: 'Something went wrong';
+
+			dispatch(showNotification({ type: 'error', message }));
+			onClose();
+		}
+	};
+
 	return (
 		<Modal
 			open={isOpen}
@@ -59,9 +91,7 @@ const ModalCustomer: FC<ModalCustomerProps> = ({ isOpen, onClose, data }) => {
 			}}
 			buttonClose>
 			<Modal.Header>{'Edit'}</Modal.Header>
-			<FormControl
-				component="form"
-				onSubmit={handleSubmit(data => console.log(data))}>
+			<FormControl component="form" onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Content>
 					<CustomerForm
 						watch={watch}

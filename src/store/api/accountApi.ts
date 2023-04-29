@@ -6,22 +6,21 @@ import { ApiResponse } from '@src/model/ApiResponse';
 import { User } from '@features/authentication/model/User';
 import { BaseSearch } from '@src/model/BaseSearch';
 
+interface UserPayload {
+	name: string;
+	email: string;
+	password: string;
+	phone: string;
+	cpf: string;
+	brithDate: string;
+}
+
 export const accountApi = createApi({
 	reducerPath: 'accountApi',
 	baseQuery: baseQueryWithReauth(`${getServiceHost('account')}/api/account`),
-	tagTypes: ['Address'],
+	tagTypes: ['Address', 'User'],
 	endpoints: builder => ({
-		createCustomer: builder.mutation<
-			User,
-			{
-				name: string;
-				email: string;
-				password: string;
-				phone: string;
-				cpf: string;
-				brithDate: string;
-			}
-		>({
+		createCustomer: builder.mutation<User, UserPayload>({
 			query: body => ({
 				url: '/user/',
 				method: 'POST',
@@ -41,6 +40,18 @@ export const accountApi = createApi({
 			transformResponse: (response: ApiResponse<User>) => {
 				return response.data;
 			},
+			providesTags: ['User'],
+		}),
+		updateMe: builder.mutation<User, Omit<UserPayload, 'password'>>({
+			query: body => ({
+				url: `/user/me`,
+				method: 'PATCH',
+				body,
+			}),
+			transformResponse: (response: ApiResponse<User>) => {
+				return response.data;
+			},
+			invalidatesTags: ['User'],
 		}),
 		getMeAddress: builder.query<Array<Addresses>, BaseSearch>({
 			query: ({ orderBy, sortOrder, limit, page }) =>
@@ -95,4 +106,5 @@ export const {
 	useCreateAddressMutation,
 	useDeleteAddressMutation,
 	useAddPinnedAddressMutation,
+	useUpdateMeMutation,
 } = accountApi;
