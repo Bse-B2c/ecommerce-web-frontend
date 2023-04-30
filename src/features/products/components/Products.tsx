@@ -13,6 +13,7 @@ type ProductsProps = ProductsStateProps & ProductsDispatchProps;
 const Products: FC<ProductsProps> = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const {
+		name = '',
 		orderBy = 'price',
 		sortOrder = 'ASC',
 		page = 1,
@@ -21,6 +22,7 @@ const Products: FC<ProductsProps> = () => {
 		...search
 	} = Object.fromEntries([...searchParams]);
 	const { data, isLoading } = useFindProductsQuery({
+		name,
 		page: +page - 1 || 0,
 		limit: +limit || 10,
 		orderBy,
