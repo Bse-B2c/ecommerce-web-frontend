@@ -13,6 +13,11 @@ export const productApi = createApi({
 			query: id => `/${id}`,
 			transformResponse: (response: ApiResponse<Product>) => response.data,
 		}),
+		searchProducts: builder.query<Array<Product>, string>({
+			query: name => `/?name=${name}&limit=99`,
+			transformResponse: (response: ApiResponse<Array<Product>>) =>
+				response.data,
+		}),
 		findProducts: builder.query<
 			Array<Product>,
 			{ categories: string } & BaseSearch
@@ -25,4 +30,8 @@ export const productApi = createApi({
 	}),
 });
 
-export const { useGetProductQuery, useFindProductsQuery } = productApi;
+export const {
+	useGetProductQuery,
+	useFindProductsQuery,
+	useLazySearchProductsQuery,
+} = productApi;
