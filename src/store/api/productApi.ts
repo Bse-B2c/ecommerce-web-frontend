@@ -20,10 +20,10 @@ export const productApi = createApi({
 		}),
 		findProducts: builder.query<
 			Array<Product>,
-			{ categories: string } & BaseSearch
+			{ categories: string; name: string } & BaseSearch
 		>({
-			query: ({ page, limit, orderBy, sortOrder, categories }) =>
-				`/?page=${page}&limit=${limit}&orderBy=${orderBy}&sortOrder=${sortOrder}&categories=${categories}`,
+			query: ({ page, limit, orderBy, sortOrder, categories, name }) =>
+				`/?name=${name}&page=${page}&limit=${limit}&orderBy=${orderBy}&sortOrder=${sortOrder}&categories=${categories}`,
 			transformResponse: (response: ApiResponse<Array<Product>>) =>
 				response.data,
 		}),
