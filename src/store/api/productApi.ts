@@ -27,6 +27,11 @@ export const productApi = createApi({
 			transformResponse: (response: ApiResponse<Array<Product>>) =>
 				response.data,
 		}),
+		findOffers: builder.query<Array<Product>, void>({
+			query: () => `/?discount=true&limit=10`,
+			transformResponse: (response: ApiResponse<Array<Product>>) =>
+				response.data,
+		}),
 	}),
 });
 
@@ -34,4 +39,5 @@ export const {
 	useGetProductQuery,
 	useFindProductsQuery,
 	useLazySearchProductsQuery,
+	useFindOffersQuery,
 } = productApi;
