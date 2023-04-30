@@ -16,7 +16,7 @@ import {
 import { Product } from '@features/Product';
 import { useLazySearchProductsQuery } from '@store/api/productApi';
 import { minimizeTitle } from '@utils/utilsString';
-import { Link as LinkRouter } from 'react-router-dom';
+import { Link as LinkRouter, useNavigate } from 'react-router-dom';
 
 interface SearchInputStateProps {}
 interface SearchInputDispatchProps {}
@@ -24,6 +24,7 @@ interface SearchInputDispatchProps {}
 type SearchInputProps = SearchInputStateProps & SearchInputDispatchProps;
 
 const SearchInput: FC<SearchInputProps> = () => {
+	const navigate = useNavigate();
 	const [value, setValue] = React.useState('');
 	const [suggestion, setSuggestion] = useState<Array<Product>>([]);
 	const [timeoutFetchSuggestion, setTimeoutFetchSuggestion] =
@@ -50,16 +51,28 @@ const SearchInput: FC<SearchInputProps> = () => {
 
 	return (
 		<Autocomplete
+			fullWidth
+			freeSolo
+			disableClearable
 			options={suggestion || []}
 			inputValue={value}
+			onInputChange={(event, value) => {
+				onFecth(value);
+				setValue(value);
+			}}
+			loading={isLoading || isFetching}
+			loadingText={<CircularProgress color="inherit" size={20} />}
 			getOptionLabel={option =>
 				typeof option === 'string' ? option : option.name
 			}
 			filterOptions={options => options}
-			freeSolo
-			disableClearable
-			loading={isLoading || isFetching}
-			loadingText={<CircularProgress color="inherit" size={20} />}
+			onChange={(e, value) => {
+				if (typeof value === 'string') {
+					navigate(`/product?name=${value}`);
+				} else {
+					navigate(`/product/${value.id}`);
+				}
+			}}
 			renderOption={(e, option) => {
 				return (
 					<li {...e}>
@@ -96,12 +109,8 @@ const SearchInput: FC<SearchInputProps> = () => {
 					</li>
 				);
 			}}
-			onInputChange={(event, value) => {
-				onFecth(value);
-				setValue(value);
-			}}
 			renderInput={({
-				inputProps: { style, className, ...inputProps },
+				inputProps: { style, className, width, ...inputProps },
 				size,
 				...params
 			}) => {
