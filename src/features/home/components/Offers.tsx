@@ -13,7 +13,7 @@ const Offers: FC<OffersProps> = () => {
 	return (
 		<Grid item xs>
 			<Grid item xs>
-				<Typography variant="h6">Offres</Typography>{' '}
+				<Typography variant="h6">Offers</Typography>{' '}
 			</Grid>
 			<Grid container item xs>
 				{data?.map(({ id, name, price, inventory, discount, images }) => (
