@@ -50,7 +50,7 @@ const ProductCard: FC<ProductCardProps> = ({
 	const formattedPrice = getBrazilCurrencyFormat(price);
 	const isDiscountActive = discount && discount.active;
 	const url = `/product/${id}`;
-	const title = minimizeTitle(name, 22);
+	const title = minimizeTitle(name, 100);
 
 	const contentButton =
 		quantity === 0 ? (
@@ -75,7 +75,7 @@ const ProductCard: FC<ProductCardProps> = ({
 		);
 
 	const contentPrice = isDiscountActive ? (
-		<>
+		<Box height={'50px'}>
 			<Typography variant="body2" color={'text.secondary'} fontWeight={800}>
 				<s>{formattedPrice}</s>
 			</Typography>
@@ -84,11 +84,13 @@ const ProductCard: FC<ProductCardProps> = ({
 					getDiscountPrice(price, discount.discountPercent)
 				)}
 			</Typography>
-		</>
+		</Box>
 	) : (
-		<Typography variant="h6" fontWeight={800} sx={{ mt: 3 }}>
-			{formattedPrice}
-		</Typography>
+		<Box height={'50px'}>
+			<Typography variant="h6" fontWeight={800} sx={{ mt: '20px' }}>
+				{formattedPrice}
+			</Typography>
+		</Box>
 	);
 
 	if (mode === 'horizontal') {
@@ -142,9 +144,7 @@ const ProductCard: FC<ProductCardProps> = ({
 	}
 
 	return (
-		<Card
-			variant="outlined"
-			sx={{ width: 200, m: 1, maxHeight: 376, minHeight: 376 }}>
+		<Card variant="outlined" sx={{ width: 200, m: 1, maxHeight: 497 }}>
 			<Box
 				sx={{
 					display: 'flex',
@@ -182,10 +182,14 @@ const ProductCard: FC<ProductCardProps> = ({
 					/>
 				</Tooltip>
 			</Link>
-			<CardContent sx={{ minHeight: 109 }}>
+			<CardContent sx={{ height: 143 }}>
 				<Link href={url} color="inherit" underline="none">
 					<Tooltip title={name} placement="right">
-						<Typography variant="body2" fontWeight={800} gutterBottom>
+						<Typography
+							height={'41px'}
+							variant="body2"
+							fontWeight={800}
+							gutterBottom>
 							{title}
 						</Typography>
 					</Tooltip>
