@@ -28,7 +28,7 @@ const AppHeader: FC<AppHeaderProps> = () => {
 				<Box sx={{ width: '35%' }}>
 					<SearchInput />
 				</Box>
-				<Box>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
 					<IconButton
 						size="large"
 						aria-label="account of current user"
