@@ -7,6 +7,7 @@ const SignUp = lazy(() => import('@pages/SignUp'));
 const Product = lazy(() => import('@pages/Product'));
 const Products = lazy(() => import('@pages/Products'));
 const Account = lazy(() => import('@pages/Account'));
+const ShopCart = lazy(() => import('@pages/ShopCart'));
 const MyData = lazy(() => import('@pages/MyData'));
 
 interface BasicRoute {
@@ -25,6 +26,11 @@ export const routes: Array<Route> = [
 		name: 'Home',
 		path: '/',
 		element: Home,
+	},
+	{
+		name: 'ShopCart',
+		path: '/shopcart',
+		element: ShopCart,
 	},
 	{
 		name: 'Unauthorize',
