@@ -37,7 +37,7 @@ const AccountTabs: FC<AccountTabsProps> = () => {
 					iconPosition="start"
 					label="My Order History"
 					component={Link}
-					to={'/account/review'}
+					to={'/account/order'}
 				/>
 			</Tabs>
 		</Grid>

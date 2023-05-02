@@ -9,6 +9,7 @@ const Products = lazy(() => import('@pages/Products'));
 const Account = lazy(() => import('@pages/Account'));
 const ShopCart = lazy(() => import('@pages/ShopCart'));
 const MyData = lazy(() => import('@pages/MyData'));
+const MyOrderHistory = lazy(() => import('@pages/MyOrderHistory'));
 
 interface BasicRoute {
 	name: string;
@@ -67,6 +68,11 @@ export const routes: Array<Route> = [
 				name: 'My Data',
 				path: 'data',
 				element: MyData,
+			},
+			{
+				name: 'My Order History',
+				path: 'order',
+				element: MyOrderHistory,
 			},
 		],
 	},
