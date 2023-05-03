@@ -12,6 +12,7 @@ import {
 	TableSortLabel,
 } from '@mui/material';
 import { v4 as uuidV4 } from 'uuid';
+import Row from '@components/table/Row';
 
 interface Data {
 	[key: string]: any;
@@ -118,6 +119,7 @@ interface TableDispatchProps {
 	 * @param sortOrder - Sort order type
 	 */
 	onChangeSort?: (key: string, sortOrder: SortOrder) => void;
+	renderExpandableRow?: (item: Data) => JSX.Element;
 }
 
 type TableProps = TableStateProps & TableDispatchProps;
@@ -183,6 +185,7 @@ const Table: FC<TableProps> = ({
 	onRowsPerPageChange,
 	onPageChange,
 	onChangeSort,
+	renderExpandableRow,
 }) => {
 	const fieldsExists: boolean = Array.isArray(fields) && fields.length > 0;
 	const bodyExists: boolean = Array.isArray(data) && data.length > 0;
@@ -190,18 +193,26 @@ const Table: FC<TableProps> = ({
 	const body =
 		bodyExists && fieldsExists ? (
 			data.map(itemRow => {
+				const isExpandableRow = !!renderExpandableRow;
 				return (
-					<TableRow key={uuidV4()}>
+					<Row
+						key={uuidV4()}
+						isCollapse={isExpandableRow}
+						item={itemRow}
+						renderExpandableRow={renderExpandableRow}>
 						{fields.map((field, index) => {
 							const renderColumn = scopedColumns[field.key];
 
 							return (
-								<TableCell key={uuidV4()} width={layout[index] ?? 'auto'}>
+								<TableCell
+									key={uuidV4()}
+									width={layout[index] ?? 'auto'}
+									sx={isExpandableRow ? { borderBottom: 'unset' } : undefined}>
 									{renderColumn ? renderColumn(itemRow, index) : <div></div>}
 								</TableCell>
 							);
 						})}
-					</TableRow>
+					</Row>
 				);
 			})
 		) : (
@@ -250,7 +261,12 @@ const Table: FC<TableProps> = ({
 				<TableContainer>
 					<MuiTable size={size}>
 						<TableHead>
-							<TableRow>{header}</TableRow>
+							<TableRow>
+								{fieldsExists && renderExpandableRow && (
+									<TableCell key={uuidV4()} width={'3%'}></TableCell>
+								)}
+								{header}
+							</TableRow>
 						</TableHead>
 						<TableBody>{body}</TableBody>
 					</MuiTable>
