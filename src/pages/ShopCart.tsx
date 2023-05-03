@@ -28,7 +28,7 @@ import {
 	Payments,
 } from '@mui/icons-material';
 import Address from '@components/Address';
-import Table from '@components/Table';
+import Table from '@components/table/Table';
 import { getBrazilCurrencyFormat } from '@utils/utilsProductPrice';
 
 interface ShopCartStateProps {}
