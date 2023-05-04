@@ -1,5 +1,11 @@
+export enum PaymentStatus {
+	PAID = 10,
+	CANCELLED = 20,
+	WAITING = 30,
+}
+
 export interface PaymentDetails {
-	status: number;
+	status: PaymentStatus;
 	provider: string;
 	date: string;
 	type: number;
@@ -19,6 +25,6 @@ export interface Order {
 	identifier: string;
 	packageTracking: string;
 	addressId: number;
-	payment: PaymentDetails;
-	items: Array<OrderItems>;
+	paymentDetails: PaymentDetails;
+	orderItems: Array<OrderItems>;
 }
