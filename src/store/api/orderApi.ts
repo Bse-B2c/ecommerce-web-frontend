@@ -16,3 +16,5 @@ export const orderApi = createApi({
 		}),
 	}),
 });
+
+export const { useFindOderHistoryQuery } = orderApi;
