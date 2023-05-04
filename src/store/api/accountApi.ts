@@ -94,6 +94,23 @@ export const accountApi = createApi({
 			}),
 			invalidatesTags: ['Address'],
 		}),
+		getOrderAddress: builder.query<Array<Addresses>, void>({
+			query: () => `/address/me?limit=999`,
+			transformResponse: (response: ApiResponse<Array<Addresses>>): any => {
+				return response
+					? response.data.reduce(
+							(acc: { [key: number]: Addresses } = {}, currentData) => {
+								const key = currentData.id;
+
+								if (!acc[key]) acc[key] = currentData;
+
+								return acc;
+							},
+							{}
+					  )
+					: {};
+			},
+		}),
 	}),
 });
 
@@ -107,4 +124,5 @@ export const {
 	useDeleteAddressMutation,
 	useAddPinnedAddressMutation,
 	useUpdateMeMutation,
+	useGetOrderAddressQuery,
 } = accountApi;
