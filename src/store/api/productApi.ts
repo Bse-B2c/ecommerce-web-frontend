@@ -32,6 +32,23 @@ export const productApi = createApi({
 			transformResponse: (response: ApiResponse<Array<Product>>) =>
 				response.data,
 		}),
+		getOrderProducts: builder.query<Array<Product>, Array<number>>({
+			query: productIds =>
+				`/?ids=${productIds.join(',')}&limit=${productIds.length}`,
+			transformResponse: (response: ApiResponse<Array<Product>>): any =>
+				response
+					? response.data.reduce(
+							(acc: { [key: number]: Product } = {}, currentData) => {
+								const key = currentData.id;
+
+								if (!acc[key]) acc[key] = currentData;
+
+								return acc;
+							},
+							{}
+					  )
+					: {},
+		}),
 	}),
 });
 
@@ -40,4 +57,5 @@ export const {
 	useFindProductsQuery,
 	useLazySearchProductsQuery,
 	useFindOffersQuery,
+	useGetOrderProductsQuery,
 } = productApi;
