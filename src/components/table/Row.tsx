@@ -13,7 +13,7 @@ interface RowStateProps {
 	item: Data;
 }
 interface RowDispatchProps {
-	renderExpandableRow?: (item: Data) => JSX.Element;
+	renderExpandableRow?: (item: any) => ReactNode;
 }
 
 type RowProps = RowStateProps & RowDispatchProps;

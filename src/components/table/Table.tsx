@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent } from 'react';
+import React, { FC, ChangeEvent, ReactNode } from 'react';
 import {
 	Box,
 	Paper,
@@ -119,7 +119,7 @@ interface TableDispatchProps {
 	 * @param sortOrder - Sort order type
 	 */
 	onChangeSort?: (key: string, sortOrder: SortOrder) => void;
-	renderExpandableRow?: (item: Data) => JSX.Element;
+	renderExpandableRow?: (item: any) => ReactNode;
 }
 
 type TableProps = TableStateProps & TableDispatchProps;
