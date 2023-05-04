@@ -4,6 +4,7 @@ import { ratingApi } from '@store/api/ratingApi';
 import { categoryApi } from '@store/api/categoryApi';
 import { accountApi } from '@store/api/accountApi';
 import { zipCodeApi } from '@store/api/zipCodeApi';
+import { orderApi } from '@store/api/orderApi';
 import notificationReducer from '@store/notification/notificationSlice';
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
 		[categoryApi.reducerPath]: categoryApi.reducer,
 		[accountApi.reducerPath]: accountApi.reducer,
 		[zipCodeApi.reducerPath]: zipCodeApi.reducer,
+		[orderApi.reducerPath]: orderApi.reducer,
 		notification: notificationReducer,
 	},
 	devTools: true,
@@ -23,6 +25,7 @@ export const store = configureStore({
 			categoryApi.middleware,
 			accountApi.middleware,
 			zipCodeApi.middleware,
+			orderApi.middleware,
 		]),
 });
 
