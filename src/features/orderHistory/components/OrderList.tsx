@@ -13,12 +13,23 @@ import {
 
 interface OrderListStateProps {
 	data?: Array<Order>;
+	page: number;
+	limit: number;
 }
-interface OrderListDispatchProps {}
+interface OrderListDispatchProps {
+	onChangePage: (page: number) => void;
+	onChangeLimit: (limit: number) => void;
+}
 
 type OrderListProps = OrderListStateProps & OrderListDispatchProps;
 
-const OrderList: FC<OrderListProps> = ({ data }) => {
+const OrderList: FC<OrderListProps> = ({
+	data,
+	limit,
+	page,
+	onChangePage,
+	onChangeLimit,
+}) => {
 	const { data: products } = useGetOrderProductsQuery(
 		data
 			? data.reduce((ids: Array<number> = [], currentOrder) => {
@@ -31,7 +42,7 @@ const OrderList: FC<OrderListProps> = ({ data }) => {
 					return ids;
 			  }, [])
 			: [],
-		{ skip: !data }
+		{ skip: !data || data.length <= 0 }
 	);
 	const { data: address } = useGetOrderAddressQuery(undefined, {
 		refetchOnMountOrArgChange: true,
@@ -118,13 +129,13 @@ const OrderList: FC<OrderListProps> = ({ data }) => {
 						</Grid>
 					);
 				}}
-				onPageChange={() => {}}
-				onRowsPerPageChange={() => {}}
+				onPageChange={(event, newPage) => onChangePage(newPage)}
+				onRowsPerPageChange={event => onChangeLimit(Number(event.target.value))}
 				paginationProps={{
-					count: 10,
-					page: 0,
+					count: 999,
+					page,
 					rowsPerPageOptions: [10, 20],
-					rowsPerPage: 10,
+					rowsPerPage: limit,
 				}}
 			/>
 		</Grid>

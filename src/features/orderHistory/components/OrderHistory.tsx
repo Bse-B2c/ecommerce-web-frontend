@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { FormControl, Grid, MenuItem, Select, Typography } from '@mui/material';
 import { useFindOderHistoryQuery } from '@store/api/orderApi';
 import OrderList from '@features/orderHistory/components/OrderList';
@@ -9,12 +9,19 @@ interface OrderHistoryDispatchProps {}
 type OrderHistoryProps = OrderHistoryStateProps & OrderHistoryDispatchProps;
 
 const OrderHistory: FC<OrderHistoryProps> = () => {
-	const { data } = useFindOderHistoryQuery({
-		limit: 10,
+	const [pagination, setPagination] = useState({
 		page: 0,
-		sortOrder: 'ASC',
-		orderBy: 'total',
+		limit: 10,
+		sortOrder: 'DESC',
+		orderBy: 'date',
 	});
+	const { data } = useFindOderHistoryQuery(pagination);
+
+	const onChangePage = (page: number) =>
+		setPagination(prevState => ({ ...prevState, page }));
+
+	const onChangeLimit = (limit: number) =>
+		setPagination(prevState => ({ ...prevState, limit }));
 
 	return (
 		<Grid item container direction="column" xs spacing={1}>
@@ -34,7 +41,13 @@ const OrderHistory: FC<OrderHistoryProps> = () => {
 					</Select>
 				</FormControl>
 			</Grid>
-			<OrderList data={data} />
+			<OrderList
+				data={data}
+				page={pagination.page}
+				limit={pagination.limit}
+				onChangePage={onChangePage}
+				onChangeLimit={onChangeLimit}
+			/>
 		</Grid>
 	);
 };
