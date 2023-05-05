@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Button, CardMedia, Grid, Typography } from '@mui/material';
 import { Order, OrderItems } from '@src/model/Order';
 import Table from '@components/table/Table';
@@ -10,6 +10,7 @@ import {
 	fields,
 	getOrderTableItem,
 } from '@features/orderHistory/components/OrderTableItem';
+import ProductReviewModal from '@features/orderHistory/components/ProductReviewModal';
 
 interface OrderListStateProps {
 	data?: Array<Order>;
@@ -30,6 +31,7 @@ const OrderList: FC<OrderListProps> = ({
 	onChangePage,
 	onChangeLimit,
 }) => {
+	const [modal, setModal] = useState({ isOpen: false, productId: 0 });
 	const { data: products } = useGetOrderProductsQuery(
 		data
 			? data.reduce((ids: Array<number> = [], currentOrder) => {
@@ -48,8 +50,15 @@ const OrderList: FC<OrderListProps> = ({
 		refetchOnMountOrArgChange: true,
 	});
 
+	const onToggle = (productId: number) =>
+		setModal(prevState => ({ isOpen: !prevState.isOpen, productId }));
+
 	return (
 		<Grid item xs>
+			<ProductReviewModal
+				isOpen={modal.isOpen}
+				onClose={() => setModal(prevState => ({ ...prevState, isOpen: false }))}
+			/>
 			<Table
 				data={data || []}
 				fields={fields}
@@ -113,11 +122,12 @@ const OrderList: FC<OrderListProps> = ({
 										total: (item: OrderItems) => (
 											<div>{getBrazilCurrencyFormat(item.total)}</div>
 										),
-										action: () => (
+										action: (item: OrderItems) => (
 											<div>
 												<Button
 													size="small"
 													variant="outlined"
+													onClick={() => onToggle(item.productId)}
 													startIcon={<StarHalf />}>
 													Add Review
 												</Button>
