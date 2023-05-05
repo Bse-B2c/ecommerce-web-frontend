@@ -7,6 +7,7 @@ import {
 	ReviewsRatingPercentage,
 } from '@src/model/StatsRating';
 import { BaseSearch } from '@src/model/BaseSearch';
+import { Rating } from '@src/model/Rating';
 
 export const ratingApi = createApi({
 	reducerPath: 'ratingApi',
@@ -50,6 +51,13 @@ export const ratingApi = createApi({
 				`/?productId=${productId}&orderBy=${orderBy}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`,
 			transformResponse: (response: ApiResponse<any>) => response.data,
 		}),
+		createRating: builder.mutation<Rating, Omit<Rating, 'id' | 'date'>>({
+			query: body => ({
+				url: '/',
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 });
 
@@ -58,4 +66,5 @@ export const {
 	useGetAverageProductReviewQuery,
 	useGetProductReviewsQuery,
 	useGetRatingAveragesQuery,
+	useCreateRatingMutation,
 } = ratingApi;
