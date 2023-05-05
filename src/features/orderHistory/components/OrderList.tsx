@@ -31,7 +31,11 @@ const OrderList: FC<OrderListProps> = ({
 	onChangePage,
 	onChangeLimit,
 }) => {
-	const [modal, setModal] = useState({ isOpen: false, productId: 0 });
+	const [modal, setModal] = useState({
+		isOpen: false,
+		productId: 0,
+		purchaseDate: '',
+	});
 	const { data: products } = useGetOrderProductsQuery(
 		data
 			? data.reduce((ids: Array<number> = [], currentOrder) => {
@@ -50,13 +54,25 @@ const OrderList: FC<OrderListProps> = ({
 		refetchOnMountOrArgChange: true,
 	});
 
-	const onToggle = (productId: number) =>
-		setModal(prevState => ({ isOpen: !prevState.isOpen, productId }));
+	const onToggle = ({
+		purchaseDate,
+		productId,
+	}: {
+		productId: number;
+		purchaseDate: string;
+	}) =>
+		setModal(prevState => ({
+			isOpen: !prevState.isOpen,
+			productId,
+			purchaseDate,
+		}));
 
 	return (
 		<Grid item xs>
 			<ProductReviewModal
 				isOpen={modal.isOpen}
+				productId={modal.productId}
+				purchaseDate={modal.purchaseDate}
 				onClose={() => setModal(prevState => ({ ...prevState, isOpen: false }))}
 			/>
 			<Table
@@ -127,7 +143,12 @@ const OrderList: FC<OrderListProps> = ({
 												<Button
 													size="small"
 													variant="outlined"
-													onClick={() => onToggle(item.productId)}
+													onClick={() =>
+														onToggle({
+															productId: item.productId,
+															purchaseDate: item.purchaseDate,
+														})
+													}
 													startIcon={<StarHalf />}>
 													Add Review
 												</Button>
