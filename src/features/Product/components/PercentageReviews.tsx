@@ -28,7 +28,7 @@ const PercentageReviews: FC<PercentageReviewsProps> = ({ elements }) => {
 							<LinearProgress
 								color="success"
 								variant="determinate"
-								value={10}
+								value={percentage}
 							/>
 						</Grid>
 						<Grid item xs={2}>

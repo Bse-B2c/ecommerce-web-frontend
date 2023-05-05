@@ -25,10 +25,10 @@ const ReviewList: FC<ReviewListProps> = ({ productId, qtdRatings }) => {
 
 	const reviews =
 		Array.isArray(data) && data.length > 0
-			? data.map(({ id, ratingScale, comment, date }, index) => (
+			? data.map(({ id, ratingScale, authorName, comment, date }, index) => (
 					<ReviewCard
 						key={`${id}-${index}`}
-						title={'Rodrigo Limões'} //TODO: Add name of User
+						title={authorName}
 						subTitle={`Rated in ${formatDate(date)}`}
 						ratingValue={ratingScale}
 						description={comment}
