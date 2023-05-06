@@ -3,6 +3,7 @@ import { Grid, Pagination, useMediaQuery, useTheme } from '@mui/material';
 import ProductCard from '@components/ProductCard';
 import { Product } from '@features/Product';
 import { useGetRatingAveragesQuery } from '@store/api/ratingApi';
+import { useAddItem } from '@hooks/useAddItem';
 
 interface ProductListStateProps {
 	data: Array<Product>;
@@ -22,6 +23,7 @@ const ProductList: FC<ProductListProps> = ({
 	onChangePage,
 }) => {
 	const theme = useTheme();
+	const { addProductInCart } = useAddItem();
 	const smBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
 	const { data: rating } = useGetRatingAveragesQuery(
 		data.map(({ id }) => id) || []
@@ -45,6 +47,13 @@ const ProductList: FC<ProductListProps> = ({
 							image={{
 								src: images[0],
 								description: '',
+							}}
+							onClick={async () => {
+								await addProductInCart(false, {
+									productId: id,
+									discount: discount?.discountPercent,
+									price,
+								});
 							}}
 						/>
 					);

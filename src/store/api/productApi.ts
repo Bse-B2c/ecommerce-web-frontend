@@ -32,7 +32,7 @@ export const productApi = createApi({
 			transformResponse: (response: ApiResponse<Array<Product>>) =>
 				response.data,
 		}),
-		getOrderProducts: builder.query<Array<Product>, Array<number>>({
+		getOrderProducts: builder.query<{ [key: number]: Product }, Array<number>>({
 			query: productIds =>
 				`/?ids=${productIds.join(',')}&limit=${productIds.length}`,
 			transformResponse: (response: ApiResponse<Array<Product>>): any =>

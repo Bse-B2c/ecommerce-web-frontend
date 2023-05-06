@@ -9,7 +9,7 @@ import { Items, ShoppingCart } from '@src/model/ShoppingCart';
 export const orderApi = createApi({
 	reducerPath: 'orderApi',
 	baseQuery: baseQueryWithReauth(`${getServiceHost('order')}/api/order`),
-	tagTypes: ['ShoppingCart'],
+	tagTypes: ['ShoppingCart', 'CartItem'],
 	endpoints: builder => ({
 		findOderHistory: builder.query<
 			Array<Order>,
@@ -31,17 +31,25 @@ export const orderApi = createApi({
 		getUserShoppingCart: builder.query<ShoppingCart, void>({
 			query: () => `/cart/shopping/me`,
 			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
-			providesTags: ['ShoppingCart'],
+			providesTags: ['ShoppingCart', 'CartItem'],
 		}),
-		addItem: builder.mutation<
-			Items,
-			{ productId: number; price: number; discount?: number }
-		>({
+		addItem: builder.mutation<Items, { productId: number; price: number }>({
 			query: body => ({
 				method: 'PATCH',
 				url: `/cart/item/add`,
 				body,
 			}),
+			invalidatesTags: ['CartItem'],
+			transformResponse: (response: ApiResponse<Items>) => response.data,
+			transformErrorResponse: baseQueryReturnValue => baseQueryReturnValue.data,
+		}),
+		removeItem: builder.mutation<Items, number>({
+			query: productId => ({
+				method: 'PATCH',
+				url: `/cart/item/remove`,
+				body: { productId },
+			}),
+			invalidatesTags: ['CartItem'],
 			transformResponse: (response: ApiResponse<Items>) => response.data,
 			transformErrorResponse: baseQueryReturnValue => baseQueryReturnValue.data,
 		}),
@@ -53,4 +61,5 @@ export const {
 	useCreateShoppingCartMutation,
 	useGetUserShoppingCartQuery,
 	useAddItemMutation,
+	useRemoveItemMutation,
 } = orderApi;
