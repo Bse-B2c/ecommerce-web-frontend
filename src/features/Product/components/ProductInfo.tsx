@@ -14,8 +14,10 @@ import {
 	getBrazilCurrencyFormat,
 	getDiscountPrice,
 } from '@utils/utilsProductPrice';
+import { useAddItem } from '@hooks/useAddItem';
 
 interface ProductInfoStateProps {
+	id: number;
 	name: string;
 	description: string;
 	discount?: Discount;
@@ -29,6 +31,7 @@ interface ProductInfoDispatchProps {}
 type ProductInfoProps = ProductInfoStateProps & ProductInfoDispatchProps;
 
 const ProductInfo: FC<ProductInfoProps> = ({
+	id,
 	name,
 	description,
 	price,
@@ -37,8 +40,10 @@ const ProductInfo: FC<ProductInfoProps> = ({
 	ratingScale,
 	qtdRatings,
 }) => {
+	const { addProductInCart } = useAddItem();
 	const isDiscountActive = discount && discount.active;
 	const formattedPrice = getBrazilCurrencyFormat(price);
+
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={5}>
@@ -105,14 +110,28 @@ const ProductInfo: FC<ProductInfoProps> = ({
 							disableElevation
 							color={'success'}
 							variant={'contained'}
+							onClick={async () => {
+								await addProductInCart(true, {
+									productId: id,
+									price,
+									discount: discount?.discountPercent,
+								});
+							}}
 							startIcon={<ShoppingCart />}>
 							Buy Now
 						</Button>
 						<Button
 							color={'success'}
 							variant={'outlined'}
+							onClick={() =>
+								addProductInCart(false, {
+									productId: id,
+									price,
+									discount: discount?.discountPercent,
+								})
+							}
 							startIcon={<AddShoppingCart />}>
-							Add to Card
+							Add to Cart
 						</Button>
 					</Stack>
 				</Grid>

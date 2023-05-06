@@ -24,6 +24,7 @@ const ProductItem: FC<ProductItemProps> = () => {
 	return (
 		<>
 			<ProductInfo
+				id={product?.id || -1}
 				name={product?.name ?? 'Unknown'}
 				description={product?.description ?? 'Unknown'}
 				price={product?.price || 0}

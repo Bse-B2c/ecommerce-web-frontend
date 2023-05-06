@@ -4,7 +4,7 @@ import { ApiResponse } from '@src/model/ApiResponse';
 import { baseQueryWithReauth } from '@src/lib/baseQueryWithReauth';
 import { Order } from '@src/model/Order';
 import { BaseSearch } from '@src/model/BaseSearch';
-import { ShoppingCart } from '@src/model/ShoppingCart';
+import { Items, ShoppingCart } from '@src/model/ShoppingCart';
 
 export const orderApi = createApi({
 	reducerPath: 'orderApi',
@@ -33,6 +33,18 @@ export const orderApi = createApi({
 			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
 			providesTags: ['ShoppingCart'],
 		}),
+		addItem: builder.mutation<
+			Items,
+			{ productId: number; price: number; discount?: number }
+		>({
+			query: body => ({
+				method: 'PATCH',
+				url: `/cart/item/add`,
+				body,
+			}),
+			transformResponse: (response: ApiResponse<Items>) => response.data,
+			transformErrorResponse: baseQueryReturnValue => baseQueryReturnValue.data,
+		}),
 	}),
 });
 
@@ -40,4 +52,5 @@ export const {
 	useFindOderHistoryQuery,
 	useCreateShoppingCartMutation,
 	useGetUserShoppingCartQuery,
+	useAddItemMutation,
 } = orderApi;
