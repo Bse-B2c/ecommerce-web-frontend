@@ -4,10 +4,12 @@ import { ApiResponse } from '@src/model/ApiResponse';
 import { baseQueryWithReauth } from '@src/lib/baseQueryWithReauth';
 import { Order } from '@src/model/Order';
 import { BaseSearch } from '@src/model/BaseSearch';
+import { ShoppingCart } from '@src/model/ShoppingCart';
 
 export const orderApi = createApi({
 	reducerPath: 'orderApi',
 	baseQuery: baseQueryWithReauth(`${getServiceHost('order')}/api/order`),
+	tagTypes: ['ShoppingCart'],
 	endpoints: builder => ({
 		findOderHistory: builder.query<
 			Array<Order>,
@@ -17,7 +19,24 @@ export const orderApi = createApi({
 				`/details/?orderBy=${orderBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}&status=${status}`,
 			transformResponse: (response: ApiResponse<Array<Order>>) => response.data,
 		}),
+		createMyShoppingCart: builder.mutation<ShoppingCart, void>({
+			query: () => ({
+				method: 'POST',
+				url: '/cart/shopping/me',
+			}),
+			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
+			invalidatesTags: ['ShoppingCart'],
+		}),
+		getUserShoppingCart: builder.query<ShoppingCart, void>({
+			query: () => `/cart/shopping/me`,
+			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
+			providesTags: ['ShoppingCart'],
+		}),
 	}),
 });
 
-export const { useFindOderHistoryQuery } = orderApi;
+export const {
+	useFindOderHistoryQuery,
+	useCreateMyShoppingCartMutation,
+	useGetUserShoppingCartQuery,
+} = orderApi;
