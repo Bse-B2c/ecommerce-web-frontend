@@ -32,7 +32,9 @@ interface ProductCardStateProps {
 	mode?: 'horizontal' | 'vertical';
 	quantity: number;
 }
-interface ProductCardDispatchProps {}
+interface ProductCardDispatchProps {
+	onClick: () => void;
+}
 
 type ProductCardProps = ProductCardStateProps & ProductCardDispatchProps;
 
@@ -46,6 +48,7 @@ const ProductCard: FC<ProductCardProps> = ({
 	averageRating,
 	quantity,
 	mode = 'vertical',
+	onClick,
 }) => {
 	const formattedPrice = getBrazilCurrencyFormat(price);
 	const isDiscountActive = discount && discount.active;
@@ -60,6 +63,7 @@ const ProductCard: FC<ProductCardProps> = ({
 				disableElevation
 				disabled
 				fullWidth
+				onClick={onClick}
 				startIcon={<ProductionQuantityLimits />}>
 				Unavailable
 			</Button>
@@ -69,8 +73,9 @@ const ProductCard: FC<ProductCardProps> = ({
 				variant="contained"
 				disableElevation
 				fullWidth
+				onClick={onClick}
 				startIcon={<AddShoppingCart />}>
-				Add Cart
+				Add to Cart
 			</Button>
 		);
 
