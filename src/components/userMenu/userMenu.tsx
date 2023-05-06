@@ -145,7 +145,7 @@ const UserMenu: FC<UserMenuProps> = () => {
 				size={'small'}
 				variant={'outlined'}
 				color={'inherit'}>
-				Login
+				Sign In
 			</Button>
 		</Box>
 	);

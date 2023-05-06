@@ -22,7 +22,7 @@ const Login: FC<LoginProps> = () => {
 				direction={'column'}
 				alignItems={'center'}>
 				<Grid item xs>
-					<Typography variant={'h6'}>Login</Typography>
+					<Typography variant={'h6'}>Sign In</Typography>
 				</Grid>
 				<LoginForm />
 			</Grid>

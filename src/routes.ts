@@ -31,6 +31,7 @@ export const routes: Array<Route> = [
 	{
 		name: 'ShopCart',
 		path: '/shopcart',
+		auth: true,
 		element: ShopCart,
 	},
 	{

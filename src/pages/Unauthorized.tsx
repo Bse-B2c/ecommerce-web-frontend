@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
-import { Home } from '@mui/icons-material';
+import { Login } from '@mui/icons-material';
 
 interface UnauthorizedStateProps {}
 interface UnauthorizedDispatchProps {}
@@ -25,12 +25,12 @@ const Unauthorized: FC<UnauthorizedProps> = () => {
 			<Typography variant="body1">To access it, please login first.</Typography>
 			<Button
 				sx={{ mt: 4 }}
-				startIcon={<Home />}
-				href="/"
+				startIcon={<Login />}
+				href="/login"
 				variant="contained"
 				size={'small'}
 				disableElevation>
-				Return Home
+				Sign In or Sign Up
 			</Button>
 		</Grid>
 	);
