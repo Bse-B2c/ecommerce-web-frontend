@@ -19,10 +19,11 @@ export const orderApi = createApi({
 				`/details/?orderBy=${orderBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}&status=${status}`,
 			transformResponse: (response: ApiResponse<Array<Order>>) => response.data,
 		}),
-		createMyShoppingCart: builder.mutation<ShoppingCart, void>({
-			query: () => ({
+		createShoppingCart: builder.mutation<ShoppingCart, number>({
+			query: userId => ({
 				method: 'POST',
-				url: '/cart/shopping/me',
+				url: '/cart/shopping/',
+				body: { userId },
 			}),
 			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
 			invalidatesTags: ['ShoppingCart'],
@@ -37,6 +38,6 @@ export const orderApi = createApi({
 
 export const {
 	useFindOderHistoryQuery,
-	useCreateMyShoppingCartMutation,
+	useCreateShoppingCartMutation,
 	useGetUserShoppingCartQuery,
 } = orderApi;

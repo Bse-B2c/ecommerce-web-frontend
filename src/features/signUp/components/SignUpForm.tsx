@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { showNotification } from '@store/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
 import { ApiResponse } from '@src/model/ApiResponse';
+import { useCreateShoppingCartMutation } from '@store/api/orderApi';
+import { User } from '@features/authentication';
 
 interface SignUpFormStateProps {}
 interface SignUpFormDispatchProps {}
@@ -15,17 +17,28 @@ const SignUpForm: FC<SignUpFormProps> = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [createUser, { isLoading }] = useCreateCustomerMutation();
+	const [createUserShoppingCart] = useCreateShoppingCartMutation();
 
 	const onSubmit = async (data: any) => {
 		try {
-			await createUser({
+			const response = await createUser({
 				name: data.name,
 				brithDate: data.brithDate.toISOString(),
 				phone: data.phone,
 				email: data.email,
 				password: data.password,
 				cpf: data.cpf,
-			}).unwrap();
+			});
+
+			const {
+				data: { id },
+			} = response as { data: User };
+
+			if (id) {
+				try {
+					await createUserShoppingCart(id);
+				} catch (e) {}
+			}
 
 			dispatch(
 				showNotification({

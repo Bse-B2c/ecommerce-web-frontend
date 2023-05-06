@@ -26,6 +26,7 @@ export const accountApi = createApi({
 				method: 'POST',
 				body,
 			}),
+			transformResponse: (response: ApiResponse<User>) => response.data,
 		}),
 		login: builder.mutation<Tokens, { email: string; password: string }>({
 			query: body => ({
