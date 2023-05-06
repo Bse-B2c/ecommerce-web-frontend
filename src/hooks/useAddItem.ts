@@ -19,14 +19,13 @@ export const useAddItem = () => {
 
 	const addProductInCart = async (
 		isBuyNowMode: boolean,
-		{ productId, discount, price }: Item
+		{ productId, price }: Item
 	) => {
 		try {
 			if (user && user.id) {
 				const response = await addItem({
 					productId: productId,
 					price,
-					discount: discount || undefined,
 				});
 
 				const { error } = response as unknown as { error: ApiResponse<null> };
