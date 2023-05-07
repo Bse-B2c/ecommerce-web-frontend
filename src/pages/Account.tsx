@@ -20,7 +20,7 @@ const Account: FC<AccountProps> = () => {
 					color={'secondary'}
 					size={'small'}
 					startIcon={<ArrowBack />}
-					href={'/home'}>
+					href={'/'}>
 					Back
 				</Button>
 			</Grid>

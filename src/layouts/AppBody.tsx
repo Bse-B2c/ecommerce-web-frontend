@@ -1,7 +1,7 @@
 import React, { FC, lazy } from 'react';
 import { Container, Toolbar } from '@mui/material';
 import { routes } from '@src/routes';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 const RequireAuth = lazy(
 	() => import('@features/authentication/components/RequireAuth')
@@ -48,6 +48,7 @@ const AppBody: FC<AppBodyProps> = () => {
 							</Route>
 						);
 					})}
+					<Route path="*" element={<Navigate to="/" replace />} />
 				</Routes>
 			</Container>
 		</Container>
