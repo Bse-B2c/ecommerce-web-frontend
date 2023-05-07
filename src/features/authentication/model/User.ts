@@ -8,6 +8,7 @@ export interface Addresses {
 	region: string;
 	country: string;
 	active: boolean;
+	user?: number;
 }
 
 export interface User {
