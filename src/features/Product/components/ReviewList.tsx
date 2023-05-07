@@ -16,7 +16,7 @@ const ReviewList: FC<ReviewListProps> = ({ productId, qtdRatings }) => {
 	const [page, setPage] = useState<number>(0);
 	const limit = 10;
 	const { data } = useGetProductReviewsQuery({
-		productId,
+		productId: [productId],
 		orderBy: 'date',
 		sortOrder: 'DESC',
 		limit,

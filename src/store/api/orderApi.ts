@@ -16,7 +16,7 @@ export const orderApi = createApi({
 			{ status?: number } & BaseSearch
 		>({
 			query: ({ orderBy, status, sortOrder, page, limit }) =>
-				`/details/?orderBy=${orderBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}&status=${status}`,
+				`/details/me?orderBy=${orderBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}&status=${status}`,
 			transformResponse: (response: ApiResponse<Array<Order>>) => response.data,
 		}),
 		createShoppingCart: builder.mutation<ShoppingCart, number>({

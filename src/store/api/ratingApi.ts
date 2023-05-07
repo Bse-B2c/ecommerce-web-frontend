@@ -11,8 +11,32 @@ import { Rating } from '@src/model/Rating';
 
 export const ratingApi = createApi({
 	reducerPath: 'ratingApi',
+	tagTypes: ['Rating'],
 	baseQuery: baseQueryWithReauth(`${getServiceHost('rating')}/api/rating`),
 	endpoints: builder => ({
+		findMyReview: builder.query<
+			Array<Rating>,
+			{ productIds: Array<number> } & BaseSearch
+		>({
+			query: ({ productIds, orderBy, sortOrder, limit, page }) =>
+				`/me?productId=${productIds.join(
+					','
+				)}&orderBy=${orderBy}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`,
+			transformResponse: (response: ApiResponse<Array<Rating>>): any =>
+				response
+					? response?.data.reduce(
+							(acc: { [key: string]: Rating } = {}, currentValue) => {
+								const key = currentValue.productId;
+
+								if (!acc[key]) acc[key] = currentValue;
+
+								return acc;
+							},
+							{}
+					  )
+					: {},
+			providesTags: ['Rating'],
+		}),
 		getScalePercentage: builder.query<ReviewsRatingPercentage, number>({
 			query: idProduct => `/stats/${idProduct}/scale/percentage`,
 			transformResponse: (response: ApiResponse<ReviewsRatingPercentage>) =>
@@ -46,9 +70,14 @@ export const ratingApi = createApi({
 					  )
 					: {},
 		}),
-		getProductReviews: builder.query<any, { productId?: number } & BaseSearch>({
+		getProductReviews: builder.query<
+			any,
+			{ productId: Array<number> } & BaseSearch
+		>({
 			query: ({ productId, orderBy, sortOrder, limit, page }) =>
-				`/?productId=${productId}&orderBy=${orderBy}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`,
+				`/?productId=${productId.join(
+					','
+				)}&orderBy=${orderBy}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`,
 			transformResponse: (response: ApiResponse<any>) => response.data,
 		}),
 		createRating: builder.mutation<Rating, Omit<Rating, 'id' | 'date'>>({
@@ -57,6 +86,18 @@ export const ratingApi = createApi({
 				method: 'POST',
 				body,
 			}),
+			invalidatesTags: ['Rating'],
+		}),
+		editRating: builder.mutation<
+			Rating,
+			{ id: number; comment: string; ratingScale: number; authorName: string }
+		>({
+			query: ({ id, ...body }) => ({
+				url: `/${id}`,
+				method: 'PATCH',
+				body,
+			}),
+			invalidatesTags: ['Rating'],
 		}),
 	}),
 });
@@ -67,4 +108,6 @@ export const {
 	useGetProductReviewsQuery,
 	useGetRatingAveragesQuery,
 	useCreateRatingMutation,
+	useFindMyReviewQuery,
+	useEditRatingMutation,
 } = ratingApi;

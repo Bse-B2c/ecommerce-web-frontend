@@ -20,6 +20,7 @@ export interface OrderItems {
 	quantity: number;
 	purchaseDate: string;
 	productId: number;
+	price: number;
 	total: number;
 }
 

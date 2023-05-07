@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Modal } from '@components/modal';
 import {
 	Grid,
-	Rating,
+	Rating as RatingMui,
 	Typography,
 	Button,
 	TextField,
@@ -15,16 +15,22 @@ import { Save, Close } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { number, object } from 'yup';
-import { useCreateRatingMutation } from '@store/api/ratingApi';
+import {
+	useCreateRatingMutation,
+	useEditRatingMutation,
+} from '@store/api/ratingApi';
 import { useAuthUser } from '@hooks/useAuthUser';
 import { showNotification } from '@store/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
 import { ApiResponse } from '@src/model/ApiResponse';
+import { Rating } from '@src/model/Rating';
 
 interface ProductReviewModalStateProps {
+	isEdit: boolean;
 	isOpen: boolean;
 	productId: number;
 	purchaseDate: string;
+	review?: Rating;
 }
 interface ProductReviewModalDispatchProps {
 	onClose: () => void;
@@ -35,6 +41,8 @@ type ProductReviewModalProps = ProductReviewModalStateProps &
 
 const ProductReviewModal: FC<ProductReviewModalProps> = ({
 	isOpen,
+	isEdit,
+	review,
 	purchaseDate,
 	productId,
 	onClose,
@@ -46,6 +54,8 @@ const ProductReviewModal: FC<ProductReviewModalProps> = ({
 		handleSubmit,
 		reset,
 		clearErrors,
+		setValue,
+		watch,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(
@@ -57,29 +67,59 @@ const ProductReviewModal: FC<ProductReviewModalProps> = ({
 		mode: 'all',
 	});
 	const [createRating] = useCreateRatingMutation();
+	const [editRating] = useEditRatingMutation();
 	const { user } = useAuthUser();
+
+	useEffect(() => {
+		if (isEdit && review) {
+			setValue('rating', review.ratingScale);
+			setValue('writeRating', review.comment);
+			setValue('profile', review.authorName === 'Anonymous');
+		} else {
+			reset();
+		}
+	}, [isEdit, review]);
+
 	const onSubmit = async (data: any) => {
 		try {
 			if (user) {
 				const userName = data.profile ? 'Anonymous' : user.name.split(' ')[0];
-				await createRating({
-					ratingScale: data.rating,
-					comment: data.writeRating,
-					authorId: user.id,
-					authorName: userName,
-					productId,
-					purchaseDate,
-				});
+
+				if (isEdit) {
+					await editRating({
+						id: review?.id || -1,
+						authorName: userName,
+						ratingScale: data.rating,
+						comment: data.writeRating,
+					});
+
+					dispatch(
+						showNotification({
+							type: 'success',
+							message: 'Review edited successfully',
+						})
+					);
+				} else {
+					await createRating({
+						ratingScale: data.rating,
+						comment: data.writeRating,
+						authorId: user.id,
+						authorName: userName,
+						productId,
+						purchaseDate,
+					});
+
+					dispatch(
+						showNotification({
+							type: 'success',
+							message: 'Review created successfully',
+						})
+					);
+				}
 
 				reset();
 				clearErrors();
 				onClose();
-				dispatch(
-					showNotification({
-						type: 'success',
-						message: 'Review created successfully',
-					})
-				);
 			}
 		} catch (e) {
 			const error = e as { data: ApiResponse<null> };
@@ -116,7 +156,11 @@ const ProductReviewModal: FC<ProductReviewModalProps> = ({
 									control={control}
 									name="rating"
 									render={({ field: { onChange, value } }) => (
-										<Rating value={Number(value)} max={5} onChange={onChange} />
+										<RatingMui
+											value={Number(value)}
+											max={5}
+											onChange={onChange}
+										/>
 									)}
 								/>
 								{errors?.rating?.message && (
@@ -155,6 +199,7 @@ const ProductReviewModal: FC<ProductReviewModalProps> = ({
 								multiline
 								rows={10}
 								fullWidth
+								InputLabelProps={{ shrink: !!watch('writeRating') }}
 								placeholder="What did you like or dislike?"
 								variant="outlined"
 							/>
@@ -183,7 +228,7 @@ const ProductReviewModal: FC<ProductReviewModalProps> = ({
 							type="submit"
 							disableElevation
 							startIcon={<Save />}>
-							Create
+							{isEdit ? 'Save' : 'Create'}
 						</Button>
 					</Grid>
 				</Modal.Footer>

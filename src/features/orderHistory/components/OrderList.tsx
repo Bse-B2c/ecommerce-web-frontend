@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
 import { Button, CardMedia, Grid, Typography } from '@mui/material';
-import { Order, OrderItems } from '@src/model/Order';
+import { Order, OrderItems, PaymentStatus } from '@src/model/Order';
 import Table from '@components/table/Table';
 import { getBrazilCurrencyFormat } from '@utils/utilsProductPrice';
-import { StarHalf } from '@mui/icons-material';
+import { StarHalf, Edit } from '@mui/icons-material';
 import { useGetOrderProductsQuery } from '@store/api/productApi';
 import { useGetOrderAddressQuery } from '@store/api/accountApi';
 import {
@@ -11,6 +11,8 @@ import {
 	getOrderTableItem,
 } from '@features/orderHistory/components/OrderTableItem';
 import ProductReviewModal from '@features/orderHistory/components/ProductReviewModal';
+import { useFindMyReviewQuery } from '@store/api/ratingApi';
+import { Rating } from '@src/model/Rating';
 
 interface OrderListStateProps {
 	data?: Array<Order>;
@@ -31,25 +33,44 @@ const OrderList: FC<OrderListProps> = ({
 	onChangePage,
 	onChangeLimit,
 }) => {
-	const [modal, setModal] = useState({
+	const [modal, setModal] = useState<{
+		isOpen: boolean;
+		productId: number;
+		purchaseDate: string;
+		isEdit: boolean;
+		review?: Rating;
+	}>({
 		isOpen: false,
+		isEdit: false,
+		review: undefined,
 		productId: 0,
 		purchaseDate: '',
 	});
-	const { data: products } = useGetOrderProductsQuery(
-		data
-			? data.reduce((ids: Array<number> = [], currentOrder) => {
-					const productIds = currentOrder.orderItems.map(
-						item => item.productId
-					);
+	const productIds = data
+		? [
+				...new Set(
+					data.reduce((ids: Array<number> = [], currentOrder) => {
+						const productIds = currentOrder.orderItems.map(
+							item => item.productId
+						);
 
-					ids.push(...productIds);
+						ids.push(...productIds);
 
-					return ids;
-			  }, [])
-			: [],
-		{ skip: !data || data.length <= 0 }
-	);
+						return ids;
+					}, [])
+				),
+		  ]
+		: [];
+	const { data: products } = useGetOrderProductsQuery(productIds, {
+		skip: !data || data.length <= 0,
+	});
+	const { data: reviews } = useFindMyReviewQuery({
+		page: 0,
+		limit: productIds.length,
+		orderBy: 'date',
+		sortOrder: 'DESC',
+		productIds,
+	});
 	const { data: address } = useGetOrderAddressQuery(undefined, {
 		refetchOnMountOrArgChange: true,
 	});
@@ -57,20 +78,28 @@ const OrderList: FC<OrderListProps> = ({
 	const onToggle = ({
 		purchaseDate,
 		productId,
+		isEdit,
+		review,
 	}: {
 		productId: number;
 		purchaseDate: string;
+		isEdit: boolean;
+		review?: Rating;
 	}) =>
 		setModal(prevState => ({
 			isOpen: !prevState.isOpen,
 			productId,
 			purchaseDate,
+			isEdit,
+			review,
 		}));
 
 	return (
 		<Grid item xs>
 			<ProductReviewModal
+				isEdit={modal.isEdit}
 				isOpen={modal.isOpen}
+				review={modal.review}
 				productId={modal.productId}
 				purchaseDate={modal.purchaseDate}
 				onClose={() => setModal(prevState => ({ ...prevState, isOpen: false }))}
@@ -80,8 +109,8 @@ const OrderList: FC<OrderListProps> = ({
 				fields={fields}
 				layout={['30%', '10%', '10%', '20%', '20%']}
 				scopedColumns={getOrderTableItem()}
-				renderExpandableRow={(item: Order) => {
-					const userAddress = address ? address[item.addressId] : undefined;
+				renderExpandableRow={(order: Order) => {
+					const userAddress = address ? address[order.addressId] : undefined;
 					return (
 						<Grid container direction="column" item xs spacing={2}>
 							<Grid item xs>
@@ -102,13 +131,14 @@ const OrderList: FC<OrderListProps> = ({
 									Products
 								</Typography>
 								<Table
-									data={item.orderItems || []}
+									data={order.orderItems || []}
 									fields={[
 										{ label: 'Product', key: 'product' },
+										{ label: 'Price', key: 'price' },
 										{ label: 'Total', key: 'total' },
 										{ label: '', key: 'action' },
 									]}
-									layout={['70%', '10%', '15%']}
+									layout={['60%', '10%', '10%', '15%']}
 									scopedColumns={{
 										product: (item: OrderItems) => {
 											const product = products
@@ -135,25 +165,56 @@ const OrderList: FC<OrderListProps> = ({
 												</Grid>
 											);
 										},
+										price: (item: OrderItems) => (
+											<div>{getBrazilCurrencyFormat(item.price)}</div>
+										),
 										total: (item: OrderItems) => (
 											<div>{getBrazilCurrencyFormat(item.total)}</div>
 										),
-										action: (item: OrderItems) => (
-											<div>
-												<Button
-													size="small"
-													variant="outlined"
-													onClick={() =>
-														onToggle({
-															productId: item.productId,
-															purchaseDate: item.purchaseDate,
-														})
-													}
-													startIcon={<StarHalf />}>
-													Add Review
-												</Button>
-											</div>
-										),
+										action: (item: OrderItems) => {
+											const review = reviews
+												? reviews[item.productId]
+												: undefined;
+
+											return (
+												<div>
+													{review ? (
+														<Button
+															size="small"
+															variant="outlined"
+															onClick={() => {
+																onToggle({
+																	productId: item.productId,
+																	purchaseDate: item.purchaseDate,
+																	isEdit: true,
+																	review,
+																});
+															}}
+															startIcon={<Edit />}>
+															Edit Review
+														</Button>
+													) : (
+														<Button
+															size="small"
+															variant="outlined"
+															disabled={
+																order.paymentDetails.status !==
+																PaymentStatus.PAID
+															}
+															onClick={() =>
+																onToggle({
+																	productId: item.productId,
+																	purchaseDate: item.purchaseDate,
+																	isEdit: false,
+																})
+															}
+															startIcon={<StarHalf />}>
+															Add Review
+														</Button>
+													)}
+												</div>
+											);
+										},
 									}}
 								/>
 							</Grid>
