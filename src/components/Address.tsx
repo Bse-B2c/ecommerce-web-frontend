@@ -8,11 +8,13 @@ import {
 	Icon,
 	Typography,
 } from '@mui/material';
-import { Delete, Edit, PushPin } from '@mui/icons-material';
+import { Delete, Edit, PushPin, Check } from '@mui/icons-material';
+import { Addresses } from '@features/authentication';
 
 interface AddressStateProps {
 	isViewMode?: boolean;
 	isPinned?: boolean;
+	isSelected?: boolean;
 	id: number;
 	streetName: string;
 	city: string;
@@ -26,6 +28,7 @@ interface AddressDispatchProps {
 	onDelete?: (id: number) => void;
 	onEdit?: (id: number) => void;
 	onPinned?: (id: number) => void;
+	onSelect?: (item: Addresses) => void;
 }
 
 type AddressProps = AddressStateProps & AddressDispatchProps;
@@ -33,6 +36,7 @@ type AddressProps = AddressStateProps & AddressDispatchProps;
 const Address: FC<AddressProps> = ({
 	isViewMode,
 	isPinned,
+	isSelected,
 	id,
 	streetName,
 	houseNumber,
@@ -44,6 +48,7 @@ const Address: FC<AddressProps> = ({
 	onDelete,
 	onEdit,
 	onPinned,
+	onSelect,
 }) => {
 	return (
 		<Card variant="outlined">
@@ -82,6 +87,30 @@ const Address: FC<AddressProps> = ({
 							startIcon={<PushPin />}
 							onClick={() => onPinned(id)}>
 							Pin
+						</Button>
+					)}
+					{onSelect && (
+						<Button
+							size="small"
+							variant={isSelected ? 'contained' : 'outlined'}
+							disabled={isSelected}
+							disableElevation
+							color="success"
+							startIcon={<Check />}
+							onClick={() =>
+								onSelect({
+									id,
+									active: !!isPinned,
+									streetName,
+									houseNumber,
+									apartment,
+									zipCode,
+									city,
+									country,
+									region,
+								})
+							}>
+							Select
 						</Button>
 					)}
 					{onEdit && (
