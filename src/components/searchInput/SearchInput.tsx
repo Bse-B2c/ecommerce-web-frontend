@@ -68,7 +68,7 @@ const SearchInput: FC<SearchInputProps> = () => {
 			filterOptions={options => options}
 			onChange={(e, value) => {
 				if (typeof value === 'string') {
-					navigate(`/product?name=${value}`);
+					navigate(`/?name=${value}`);
 				} else {
 					navigate(`/product/${value.id}`);
 				}

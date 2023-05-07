@@ -27,11 +27,6 @@ export const productApi = createApi({
 			transformResponse: (response: ApiResponse<Array<Product>>) =>
 				response.data,
 		}),
-		findOffers: builder.query<Array<Product>, void>({
-			query: () => `/?discount=true&limit=10`,
-			transformResponse: (response: ApiResponse<Array<Product>>) =>
-				response.data,
-		}),
 		getOrderProducts: builder.query<{ [key: number]: Product }, Array<number>>({
 			query: productIds =>
 				`/?ids=${productIds.join(',')}&limit=${productIds.length}`,
@@ -56,6 +51,5 @@ export const {
 	useGetProductQuery,
 	useFindProductsQuery,
 	useLazySearchProductsQuery,
-	useFindOffersQuery,
 	useGetOrderProductsQuery,
 } = productApi;
