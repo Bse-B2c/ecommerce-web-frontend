@@ -4,6 +4,11 @@ export enum PaymentStatus {
 	WAITING = 30,
 }
 
+export enum PaymentType {
+	BOLETO = 10,
+	PIX = 20,
+}
+
 export interface PaymentDetails {
 	status: PaymentStatus;
 	provider: string;

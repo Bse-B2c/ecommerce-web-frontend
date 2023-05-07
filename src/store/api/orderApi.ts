@@ -68,6 +68,19 @@ export const orderApi = createApi({
 			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
 			transformErrorResponse: baseQueryReturnValue => baseQueryReturnValue.data,
 		}),
+		createOrderDetails: builder.mutation<
+			Order,
+			{ paymentType: number; addressId: number; shoppingCartId: number }
+		>({
+			query: body => ({
+				method: 'POST',
+				url: `/details`,
+				body,
+			}),
+			invalidatesTags: ['ShoppingCart', 'CartItem'],
+			transformResponse: (response: ApiResponse<Order>) => response.data,
+			transformErrorResponse: baseQueryReturnValue => baseQueryReturnValue.data,
+		}),
 	}),
 });
 
@@ -79,4 +92,5 @@ export const {
 	useRemoveItemMutation,
 	useClearShoppingCartMutation,
 	useGetTotalItemsQuery,
+	useCreateOrderDetailsMutation,
 } = orderApi;
