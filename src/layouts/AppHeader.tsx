@@ -1,15 +1,8 @@
 import React, { FC } from 'react';
-import {
-	AppBar,
-	Badge,
-	Box,
-	IconButton,
-	Toolbar,
-	Typography,
-} from '@mui/material';
-import { ShoppingCart } from '@mui/icons-material';
+import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import SearchInput from '@components/searchInput/SearchInput';
 import UserMenu from '@components/userMenu/userMenu';
+import ShoppingCartButton from '@components/ShoppingCartButton';
 
 interface AppHeaderStateProps {}
 interface AppHeaderDispatchProps {}
@@ -29,16 +22,7 @@ const AppHeader: FC<AppHeaderProps> = () => {
 					<SearchInput />
 				</Box>
 				<Box sx={{ display: 'flex', alignItems: 'center' }}>
-					<IconButton
-						size="large"
-						aria-label="account of current user"
-						aria-controls="menu-appbar"
-						aria-haspopup="true"
-						color="inherit">
-						<Badge badgeContent={4} color="error">
-							<ShoppingCart />
-						</Badge>
-					</IconButton>
+					<ShoppingCartButton />
 					<UserMenu />
 				</Box>
 			</Toolbar>

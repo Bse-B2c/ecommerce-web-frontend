@@ -16,7 +16,10 @@ import { getBrazilCurrencyFormat } from '@utils/utilsProductPrice';
 import { Product } from '@features/Product';
 import { ShoppingCartItem } from '@src/model/ShoppingCartItem';
 import { useAddItem } from '@hooks/useAddItem';
-import { useRemoveItemMutation } from '@store/api/orderApi';
+import {
+	useClearShoppingCartMutation,
+	useRemoveItemMutation,
+} from '@store/api/orderApi';
 import { ApiResponse } from '@src/model/ApiResponse';
 import { showNotification } from '@store/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
@@ -32,6 +35,7 @@ const ProductList: FC<ProductListProps> = ({ items }) => {
 	const dispatch = useDispatch();
 	const { addProductInCart } = useAddItem();
 	const [removeItem] = useRemoveItemMutation();
+	const [clearShoppingCart] = useClearShoppingCartMutation();
 
 	const removeProductFromCart = async (productId: number) => {
 		try {
@@ -83,6 +87,10 @@ const ProductList: FC<ProductListProps> = ({ items }) => {
 						variant="outlined"
 						size="small"
 						color="error"
+						disabled={items.length <= 0}
+						onClick={() => {
+							clearShoppingCart();
+						}}
 						startIcon={<Delete />}>
 						Remove All Products
 					</Button>

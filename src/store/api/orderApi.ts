@@ -33,6 +33,11 @@ export const orderApi = createApi({
 			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
 			providesTags: ['ShoppingCart', 'CartItem'],
 		}),
+		getTotalItems: builder.query<number, void>({
+			query: () => `/cart/shopping/item/total`,
+			transformResponse: (response: ApiResponse<number>) => response.data,
+			providesTags: ['ShoppingCart', 'CartItem'],
+		}),
 		addItem: builder.mutation<Items, { productId: number; price: number }>({
 			query: body => ({
 				method: 'PATCH',
@@ -53,6 +58,16 @@ export const orderApi = createApi({
 			transformResponse: (response: ApiResponse<Items>) => response.data,
 			transformErrorResponse: baseQueryReturnValue => baseQueryReturnValue.data,
 		}),
+		clearShoppingCart: builder.mutation<ShoppingCart, void>({
+			query: productId => ({
+				method: 'PATCH',
+				url: `/cart/shopping/clear`,
+				body: { productId },
+			}),
+			invalidatesTags: ['CartItem'],
+			transformResponse: (response: ApiResponse<ShoppingCart>) => response.data,
+			transformErrorResponse: baseQueryReturnValue => baseQueryReturnValue.data,
+		}),
 	}),
 });
 
@@ -62,4 +77,6 @@ export const {
 	useGetUserShoppingCartQuery,
 	useAddItemMutation,
 	useRemoveItemMutation,
+	useClearShoppingCartMutation,
+	useGetTotalItemsQuery,
 } = orderApi;
