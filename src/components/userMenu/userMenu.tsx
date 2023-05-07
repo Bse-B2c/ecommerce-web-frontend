@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import {
 	AccountCircle,
-	StarHalf,
 	Person,
 	ShoppingBasket,
 	Logout,
@@ -108,12 +107,6 @@ const UserMenu: FC<UserMenuProps> = () => {
 							<ShoppingBasket />
 						</ListItemIcon>
 						My order history
-					</MenuItem>
-					<MenuItem component={RouterLink} to="/account/reviews">
-						<ListItemIcon>
-							<StarHalf />
-						</ListItemIcon>
-						Reviews
 					</MenuItem>
 					<MenuItem
 						component={Link}

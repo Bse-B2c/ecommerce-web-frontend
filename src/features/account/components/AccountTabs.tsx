@@ -1,6 +1,6 @@
 import React, { FC, SyntheticEvent, useState } from 'react';
 import { Grid, Tab, Tabs } from '@mui/material';
-import { Person, ShoppingBasket, StarHalf } from '@mui/icons-material';
+import { Person, ShoppingBasket } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 interface AccountTabsStateProps {}
@@ -24,13 +24,6 @@ const AccountTabs: FC<AccountTabsProps> = () => {
 					label="My Data"
 					component={Link}
 					to={'/account/data'}
-				/>
-				<Tab
-					icon={<StarHalf />}
-					iconPosition="start"
-					label="My Reviews"
-					component={Link}
-					to={'/account/review'}
 				/>
 				<Tab
 					icon={<ShoppingBasket />}
