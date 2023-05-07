@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useGetUserShoppingCartQuery } from '@store/api/orderApi';
 import {
 	Alert,
@@ -13,8 +13,7 @@ import {
 	ToggleButtonGroup,
 	Typography,
 } from '@mui/material';
-import { ConfirmationNumber, Home, Payments, Pix } from '@mui/icons-material';
-import Address from '@components/Address';
+import { ConfirmationNumber, Payments, Pix } from '@mui/icons-material';
 import {
 	getBrazilCurrencyFormat,
 	getDiscountPrice,
@@ -24,26 +23,43 @@ import { useGetOrderProductsQuery } from '@store/api/productApi';
 import { Product } from '@features/Product';
 import { Items } from '@src/model/ShoppingCart';
 import { ShoppingCartItem } from '@src/model/ShoppingCartItem';
+import ShoppingCartAddress from '@features/shopCart/components/ShoppingCartAddress';
+import { Addresses } from '@features/authentication';
+import { useGetMeAddressQuery } from '@store/api/accountApi';
 
 interface ShopCartStateProps {}
 interface ShopcartDispatchProps {}
 
 type ShopCartProps = ShopCartStateProps & ShopcartDispatchProps;
 
-//	caso sim, exibir o shopping cart
-
 const ShopCart: FC<ShopCartProps> = () => {
+	const { data: userAddress } = useGetMeAddressQuery(
+		{
+			limit: 999,
+			page: 0,
+			sortOrder: 'DESC',
+			orderBy: 'active',
+		},
+		{ refetchOnMountOrArgChange: true }
+	);
 	const { data: shoppingCart } = useGetUserShoppingCartQuery();
 	const { data: products } = useGetOrderProductsQuery(
 		shoppingCart?.cartItems?.map(item => item.productId) || [],
 		{ skip: !shoppingCart?.cartItems || shoppingCart?.cartItems.length <= 0 }
 	);
-
+	const [address, setAddress] = useState<Addresses | null>(null);
 	const calcDiscount = (price: number, product: Product | undefined) => {
 		return product && product.discount !== null && product.discount.active
 			? getDiscountPrice(price, product?.discount?.discountPercent)
 			: price;
 	};
+
+	useEffect(() => {
+		if (userAddress) {
+			const address = userAddress.find(address => address.active);
+			setAddress(address || null);
+		}
+	}, [userAddress]);
 
 	const getItems = (
 		items: Array<Items>,
@@ -87,27 +103,16 @@ const ShopCart: FC<ShopCartProps> = () => {
 		shoppingCart?.cartItems || [],
 		products || {}
 	);
+
 	return (
 		<Grid container item xs spacing={1}>
 			<Grid container direction={'column'} item xs={7} spacing={2}>
-				<Grid item xs>
-					<Typography variant="h6">
-						<Icon sx={{ mr: 1 }}>
-							<Home />
-						</Icon>
-						Select your Adrress
-					</Typography>
-					<Address
-						id={1}
-						streetName={'Rua 1'}
-						city={'Rio de Janeiro'}
-						country={'Brasil'}
-						apartment={'apt. 102'}
-						houseNumber={15}
-						zipCode={'21452415'}
-						region={'Jardin'}
-					/>
-				</Grid>
+				<ShoppingCartAddress
+					userId={shoppingCart?.userId}
+					address={address}
+					addresses={userAddress || []}
+					onChangeAddress={(item: Addresses) => setAddress(item)}
+				/>
 				<ProductList items={items || []} />
 			</Grid>
 			<Grid item xs={4}>
