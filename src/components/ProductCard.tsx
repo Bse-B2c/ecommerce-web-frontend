@@ -122,7 +122,7 @@ const ProductCard: FC<ProductCardProps> = ({
 								{isDiscountActive && (
 									<Chip
 										sx={{ ml: 1 }}
-										label={'30% off'}
+										label={`${discount?.discountPercent || 0}% off`}
 										color={'primary'}
 										size={'small'}
 									/>
@@ -157,7 +157,11 @@ const ProductCard: FC<ProductCardProps> = ({
 					justifyContent: isDiscountActive ? 'space-between' : 'flex-end',
 				}}>
 				{isDiscountActive && (
-					<Chip label={'30% off'} color={'primary'} size={'small'} />
+					<Chip
+						label={`${discount?.discountPercent || 0}% off`}
+						color={'primary'}
+						size={'small'}
+					/>
 				)}
 				<Box
 					sx={{
