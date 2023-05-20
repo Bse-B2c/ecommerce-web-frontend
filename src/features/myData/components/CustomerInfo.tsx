@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Card, CardContent, Grid, IconButton, Typography } from '@mui/material';
 import { Edit } from '@mui/icons-material';
+import { formatDate } from '@utils/utilsDate';
 
 interface CustomerInfoStateProps {
 	id: number;
@@ -74,7 +75,7 @@ const CustomerInfo: FC<CustomerInfoProps> = ({
 						<Typography variant={'subtitle2'} color={labelColor}>
 							Brith Date
 						</Typography>
-						<Typography variant={'body2'}>{brithDate}</Typography>
+						<Typography variant={'body2'}>{formatDate(brithDate)}</Typography>
 					</Grid>
 					{mainAddress && (
 						<Grid item>
