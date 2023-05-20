@@ -131,6 +131,7 @@ const ProductCard: FC<ProductCardProps> = ({
 									<Rating
 										size={'small'}
 										name="read-only"
+										precision={0.5}
 										value={averageRating}
 										readOnly
 									/>
@@ -173,6 +174,7 @@ const ProductCard: FC<ProductCardProps> = ({
 					<Rating
 						size={'small'}
 						name="read-only"
+						precision={0.5}
 						value={averageRating}
 						readOnly
 					/>
