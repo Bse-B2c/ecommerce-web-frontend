@@ -72,6 +72,7 @@ const ProductInfo: FC<ProductInfoProps> = ({
 						<Rating
 							size={'small'}
 							name="read-only"
+							precision={0.5}
 							value={ratingScale}
 							readOnly
 						/>

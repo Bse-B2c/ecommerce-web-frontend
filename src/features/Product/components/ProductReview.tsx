@@ -30,6 +30,7 @@ const ProductReview: FC<ProductReviewProps> = ({
 					<Rating
 						size={'medium'}
 						name="read-only"
+						precision={0.5}
 						value={ratingScale}
 						readOnly
 					/>
