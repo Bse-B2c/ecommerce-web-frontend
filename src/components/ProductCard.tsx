@@ -53,7 +53,7 @@ const ProductCard: FC<ProductCardProps> = ({
 	const formattedPrice = getBrazilCurrencyFormat(price);
 	const isDiscountActive = discount && discount.active;
 	const url = `/product/${id}`;
-	const title = minimizeTitle(name, 100);
+	const title = minimizeTitle(name, 35);
 
 	const contentButton =
 		quantity === 0 ? (
@@ -117,16 +117,16 @@ const ProductCard: FC<ProductCardProps> = ({
 								<Tooltip title={name} placement="right">
 									<Typography variant="body2" fontWeight={800} gutterBottom>
 										{title}
-										{isDiscountActive && (
-											<Chip
-												sx={{ ml: 1 }}
-												label={'30% off'}
-												color={'primary'}
-												size={'small'}
-											/>
-										)}
 									</Typography>
 								</Tooltip>
+								{isDiscountActive && (
+									<Chip
+										sx={{ ml: 1 }}
+										label={'30% off'}
+										color={'primary'}
+										size={'small'}
+									/>
+								)}
 								<Box sx={{ display: 'flex', mb: 1 }}>
 									<Rating
 										size={'small'}
