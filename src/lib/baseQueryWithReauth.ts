@@ -48,11 +48,12 @@ export const baseQueryWithReauth =
 					data: { token, refreshToken },
 				} = data as { data: Tokens };
 
-				setTokens({ token, refreshToken: refreshToken?.key ?? '' });
+				setTokens({
+					token,
+					refreshToken: refreshToken?.key ?? getRefreshToken() ?? '',
+				});
 
 				result = await baseQuery(serviceHost)(args, api, extraOptions);
-			} else {
-				removeTokens();
 			}
 		} else if (error && error.status === 403) {
 			removeTokens();
